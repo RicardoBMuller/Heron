@@ -4,141 +4,167 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#6d5efc" />
-  <meta name="description" content="Guia offline e interativo do trajeto de metrô, com mascote e acompanhamento passo a passo." />
-  <title>Missão Metrô</title>
+  <meta name="description" content="Guia offline do metrô, trem e monotrilho de São Paulo com busca de rota e acompanhamento passo a passo." />
+  <title>Metroquinho • Guia offline</title>
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/mascot.svg" type="image/svg+xml" />
+  <link rel="preload" href="assets/mascot.svg" as="image" type="image/svg+xml" />
+  <link rel="preload" href="assets/train.svg" as="image" type="image/svg+xml" />
+  <link rel="preload" href="assets/station.svg" as="image" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app-shell">
-    <header class="hero glass">
+    <header class="hero">
       <div class="hero-top">
-        <div class="brand-pill">
-          <span class="brand-dot"></span>
-          <span>Missão Metrô</span>
+        <div class="brand">
+          <img src="assets/mascot.svg" alt="Mascote Metroquinho" class="mascot" />
+          <div>
+            <p class="eyebrow">Mini app premium</p>
+            <h1>Metroquinho</h1>
+            <p class="subtitle">Escolha a origem e o destino. O app monta a rota e guarda tudo para funcionar offline.</p>
+          </div>
         </div>
-        <button id="installBtn" class="ghost-btn hidden" type="button" aria-label="Instalar aplicativo">Instalar</button>
+        <button id="speakCurrentBtn" class="icon-btn" type="button" aria-label="Ouvir a orientação atual">
+          🔊
+        </button>
       </div>
 
-      <div class="hero-body">
-        <div class="hero-copy">
-          <p class="eyebrow">Guia da viagem</p>
-          <h1>Vamos chegar direitinho até <span>Vila Sônia</span></h1>
-          <p class="subcopy">Toque em cada etapa para acompanhar o caminho. O progresso fica salvo no celular, mesmo sem internet.</p>
+      <div class="hero-status">
+        <span id="networkBadge" class="network-badge">Carregando…</span>
+        <span id="saveBadge" class="save-badge">Tudo salvo no aparelho</span>
+      </div>
 
-          <div class="status-row">
-            <div class="status-chip" id="netStatus">Verificando conexão…</div>
-            <div class="status-chip success" id="saveStatus">Progresso salvo</div>
-          </div>
+      <div class="planner-card glass">
+        <div class="planner-grid">
+          <button class="station-field" id="originField" type="button" aria-label="Escolher estação de origem">
+            <span class="field-label">Origem</span>
+            <strong id="originValue">Escolher estação</strong>
+            <small id="originMeta">Metrô, trem ou monotrilho</small>
+          </button>
+
+          <button id="swapBtn" class="swap-btn" type="button" aria-label="Trocar origem e destino">
+            ⇅
+          </button>
+
+          <button class="station-field" id="destinationField" type="button" aria-label="Escolher estação de destino">
+            <span class="field-label">Destino</span>
+            <strong id="destinationValue">Escolher estação</strong>
+            <small id="destinationMeta">Metrô, trem ou monotrilho</small>
+          </button>
         </div>
 
-        <div class="mascot-card floaty">
-          <img src="assets/mascot.svg" alt="Mascote simpático do aplicativo" class="mascot" />
-          <div class="mascot-bubble">
-            <strong id="mascotTitle">Oi! Eu sou o Metroquinho.</strong>
-            <p id="mascotText">Vou te mostrar cada passo. É só tocar em “Próximo passo”.</p>
-          </div>
+        <div class="planner-actions">
+          <button id="findRouteBtn" class="primary-btn" type="button">Encontrar melhor caminho</button>
+          <button id="resetRouteBtn" class="ghost-btn" type="button">Limpar rota</button>
+        </div>
+
+        <div class="recent-wrap">
+          <p class="recent-title">Recentes</p>
+          <div id="recentStations" class="chips"></div>
         </div>
       </div>
     </header>
 
     <main class="content">
-      <section class="mission-panel glass reveal">
-        <div class="mission-head">
+      <section class="summary-card glass" id="summaryCard" hidden>
+        <div class="summary-head">
           <div>
-            <p class="eyebrow">Resumo rápido</p>
-            <h2>Sua missão de hoje</h2>
+            <p class="eyebrow">Resumo da rota</p>
+            <h2 id="routeTitle">Sua viagem</h2>
           </div>
-          <div class="progress-ring-wrap" aria-label="Progresso da viagem">
-            <svg viewBox="0 0 120 120" class="progress-ring">
-              <circle cx="60" cy="60" r="50" class="ring-bg"></circle>
-              <circle cx="60" cy="60" r="50" class="ring-fill" id="progressCircle"></circle>
+          <div class="progress-ring-wrap">
+            <svg class="progress-ring" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+              <circle class="ring-bg" cx="42" cy="42" r="32"></circle>
+              <circle class="ring-progress" id="ringProgress" cx="42" cy="42" r="32"></circle>
             </svg>
             <div class="progress-center">
-              <span id="progressPercent">0%</span>
+              <strong id="progressPercent">0%</strong>
               <small>feito</small>
             </div>
           </div>
         </div>
 
-        <div class="quick-route" id="quickRoute" aria-label="Mapa resumido do trajeto"></div>
-
-        <div class="actions-grid">
-          <button class="primary-btn pulse-soft" id="nextBtn" type="button">Próximo passo</button>
-          <button class="secondary-btn" id="voiceBtn" type="button">Ouvir guia</button>
-          <button class="secondary-btn" id="expandBtn" type="button">Ver todas as etapas</button>
-          <button class="secondary-btn danger" id="resetBtn" type="button">Recomeçar</button>
+        <div class="route-stats">
+          <div class="stat">
+            <span class="stat-label">Tempo estimado</span>
+            <strong id="etaValue">—</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Linhas</span>
+            <strong id="linesValue">—</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Trocas</span>
+            <strong id="changesValue">—</strong>
+          </div>
         </div>
+
+        <div class="timeline-head">
+          <h3>Passo a passo</h3>
+          <button id="speakRouteBtn" class="tiny-btn" type="button">Ouvir rota</button>
+        </div>
+        <div id="routeTimeline" class="route-timeline"></div>
       </section>
 
-      <section class="current-step glass reveal">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Agora</p>
-            <h2 id="currentTitle">Saindo de São Lucas</h2>
-          </div>
-          <span class="step-counter" id="stepCounter">Etapa 1 de 6</span>
-        </div>
-
-        <div class="current-card" id="currentCard">
-          <div class="current-illustration-wrap">
-            <img id="currentIllustration" src="assets/step-1.svg" alt="Ilustração da etapa atual" class="current-illustration" />
-          </div>
-          <div class="current-content">
-            <span class="line-tag" id="currentLineTag">Linha 15-Prata</span>
-            <p id="currentDescription">Entre na estação São Lucas e siga para a viagem até Vila Prudente.</p>
-            <div class="tip-box" id="tipBox">
-              <strong>Dica:</strong>
-              <span id="currentTip">Fique atento ao nome da estação e às placas da Linha 15-Prata.</span>
-            </div>
-            <div class="mini-checks" id="miniChecks"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="timeline glass reveal hidden" id="timelineSection">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Roteiro completo</p>
-            <h2>Etapas da viagem</h2>
-          </div>
-        </div>
-        <div id="stepsList" class="steps-list"></div>
-      </section>
-
-      <section class="finish-card glass reveal hidden" id="finishCard">
-        <div class="finish-inner">
-          <img src="assets/trophy.svg" alt="Troféu de missão cumprida" class="finish-icon bounce-in" />
-          <h2>Missão cumprida 🎉</h2>
-          <p>Você chegou ao destino. Agora é só sair com calma na estação Vila Sônia.</p>
-          <button class="primary-btn" id="celebrateVoiceBtn" type="button">Ouvir parabéns</button>
+      <section class="empty-state glass" id="emptyState">
+        <img src="assets/train.svg" alt="Ilustração de trem" class="hero-illustration" />
+        <h2>Escolha as duas estações</h2>
+        <p>Você pode digitar ou escolher qualquer estação cadastrada. Depois, o app mostra o caminho de um jeito fácil de seguir.</p>
+        <div class="empty-list">
+          <div class="empty-item"><img src="assets/station.svg" alt="" /> <span>Busca por nome da estação</span></div>
+          <div class="empty-item"><img src="assets/walk.svg" alt="" /> <span>Orientação de troca entre linhas</span></div>
+          <div class="empty-item"><img src="assets/finish.svg" alt="" /> <span>Progresso salvo no celular</span></div>
         </div>
       </section>
     </main>
   </div>
 
-  <template id="stepTemplate">
-    <article class="step-item">
-      <button class="step-main" type="button">
-        <div class="step-left">
+  <div class="modal" id="stationModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="sheet-handle"></div>
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow" id="modalEyebrow">Escolher</p>
+          <h2 id="modalTitle">Selecionar estação</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Fechar">✕</button>
+      </div>
+
+      <label class="search-box">
+        <span>Buscar estação</span>
+        <input id="stationSearchInput" type="search" placeholder="Ex.: São Lucas, Luz, Pinheiros..." autocomplete="off" />
+      </label>
+
+      <div class="filter-row">
+        <button type="button" class="filter-pill active" data-filter="all">Todas</button>
+        <button type="button" class="filter-pill" data-filter="metro">Metrô</button>
+        <button type="button" class="filter-pill" data-filter="trem">Trem</button>
+        <button type="button" class="filter-pill" data-filter="monotrilho">Monotrilho</button>
+      </div>
+
+      <div id="stationList" class="station-list" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <template id="timelineCardTemplate">
+    <article class="timeline-card">
+      <div class="timeline-visual">
+        <img class="timeline-icon" alt="" />
+      </div>
+      <div class="timeline-body">
+        <div class="timeline-topline">
+          <span class="line-tag"></span>
           <span class="step-badge"></span>
-          <img class="step-thumb" alt="" />
         </div>
-        <div class="step-copy">
-          <div class="step-copy-top">
-            <h3></h3>
-            <span class="step-line"></span>
-          </div>
-          <p></p>
+        <h3 class="timeline-title"></h3>
+        <p class="timeline-text"></p>
+        <div class="stations-strip"></div>
+        <div class="timeline-actions">
+          <button class="primary-btn step-btn" type="button"></button>
+          <button class="ghost-btn voice-btn" type="button">Ouvir</button>
         </div>
-        <div class="step-right">
-          <span class="step-state">Pendente</span>
-          <span class="chevron">⌄</span>
-        </div>
-      </button>
-      <div class="step-extra">
-        <div class="step-tip"></div>
-        <button class="mini-done-btn" type="button">Marcar esta etapa</button>
       </div>
     </article>
   </template>
