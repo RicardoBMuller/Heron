@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-label="Balcão de ajuda da estação">
+  <rect width="220" height="220" rx="28" fill="#24164a"/>
+  <rect x="26" y="144" width="168" height="42" rx="16" fill="#a855f7"/>
+  <rect x="44" y="54" width="126" height="54" rx="18" fill="#f8fafc"/>
+  <text x="68" y="87" font-family="Arial" font-size="22" font-weight="700" fill="#6d28d9">AJUDA</text>
+  <circle cx="66" cy="138" r="20" fill="#f8d1b2"/>
+  <rect x="48" y="160" width="38" height="30" rx="12" fill="#22c55e"/>
+  <circle cx="138" cy="132" r="18" fill="#f8d1b2"/>
+  <rect x="122" y="150" width="34" height="36" rx="12" fill="#60a5fa"/>
+</svg>

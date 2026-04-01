@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-label="Placas de estação">
+  <rect width="220" height="220" rx="28" fill="#24164a"/>
+  <rect x="84" y="32" width="14" height="150" rx="7" fill="#f8fafc"/>
+  <rect x="34" y="44" width="122" height="40" rx="18" fill="#22c55e"/>
+  <text x="52" y="69" font-family="Arial" font-size="18" font-weight="700" fill="#052e16">Linha 2</text>
+  <rect x="96" y="96" width="96" height="40" rx="18" fill="#facc15"/>
+  <text x="110" y="121" font-family="Arial" font-size="18" font-weight="700" fill="#1f2937">Linha 4</text>
+  <rect x="38" y="146" width="118" height="34" rx="17" fill="#e5e7eb"/>
+  <text x="56" y="168" font-family="Arial" font-size="16" font-weight="700" fill="#334155">São Lucas</text>
+  <path d="M174 152h16" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M180 138l18 18-18 18" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

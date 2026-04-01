@@ -1,12 +1,15 @@
-const STORAGE_KEY = 'missao-metro-progress-v1';
+const STORAGE_KEY = 'missao-metro-progress-v2';
 
 const steps = [
   {
     id: 1,
     tag: 'Linha 15-Prata',
     title: 'Entrar em São Lucas',
-    description: 'Entre na estação São Lucas e procure a Linha 15-Prata. O objetivo agora é seguir até Vila Prudente.',
+    description: 'Entre na estação São Lucas e procure a Linha 15-Prata. Agora a missão é ir até Vila Prudente.',
+    hint: 'Dica ninja: veja se aparece “Vila Prudente” nas placas e painéis.',
     color: 'silver',
+    image: 'assets/step-1-sao-lucas.svg',
+    imageAlt: 'Ilustração de uma estação com trem prata chegando à plataforma.',
     map: [
       ['São Lucas', 'silver'],
       ['→', 'arrow'],
@@ -18,7 +21,10 @@ const steps = [
     tag: 'Transferência',
     title: 'Trocar para a Linha 2-Verde',
     description: 'Ao chegar em Vila Prudente, siga as placas de transferência e vá para a Linha 2-Verde.',
+    hint: 'Procure setas e o nome “Linha 2-Verde”. Não tenha pressa.',
     color: 'green',
+    image: 'assets/step-2-transfer.svg',
+    imageAlt: 'Ilustração de corredor de transferência entre plataformas com placas verdes.',
     map: [
       ['Vila Prudente', 'silver'],
       ['→', 'arrow'],
@@ -30,7 +36,10 @@ const steps = [
     tag: 'Linha 2-Verde',
     title: 'Pegar o metrô sentido Vila Madalena',
     description: 'Confirme nas placas e no letreiro do trem: o sentido precisa ser Vila Madalena. Entre no trem certo.',
+    hint: 'Antes de entrar, confira duas vezes o sentido. Sem pressa = mais segurança.',
     color: 'green',
+    image: 'assets/step-3-green-train.svg',
+    imageAlt: 'Ilustração de trem verde com placa indicando sentido Vila Madalena.',
     map: [
       ['Vila Prudente', 'green'],
       ['→', 'arrow'],
@@ -41,8 +50,11 @@ const steps = [
     id: 4,
     tag: 'Desembarque',
     title: 'Descer em Consolação',
-    description: 'Quando chegar em Consolação, saia do trem e siga com calma. Agora vem a parte da caminhada interna.',
+    description: 'Quando chegar em Consolação, saia do trem com calma. Agora vem a parte da caminhada interna.',
+    hint: 'Olhe o nome da estação nas placas da plataforma antes de sair andando.',
     color: 'green',
+    image: 'assets/step-4-consolacao.svg',
+    imageAlt: 'Ilustração de plataforma com placa grande escrito Consolação.',
     map: [
       ['Linha 2-Verde', 'green'],
       ['→', 'arrow'],
@@ -54,7 +66,10 @@ const steps = [
     tag: 'Caminhada interna',
     title: 'Ir a pé para a estação Paulista',
     description: 'Siga as placas dentro da estação até a ligação com Paulista, que é a estação da Linha 4-Amarela.',
+    hint: 'Se vir “Paulista / Linha 4-Amarela”, você está no caminho certo.',
     color: 'walk',
+    image: 'assets/step-5-walk.svg',
+    imageAlt: 'Ilustração de caminhada em corredor de estação com setas e placas.',
     map: [
       ['Consolação', 'green'],
       ['→', 'arrow'],
@@ -66,7 +81,10 @@ const steps = [
     tag: 'Linha 4-Amarela',
     title: 'Pegar o metrô sentido Vila Sônia',
     description: 'Na estação Paulista, entre na Linha 4-Amarela. Confira se o sentido é Vila Sônia antes de embarcar.',
+    hint: 'A palavra mais importante aqui é: Vila Sônia.',
     color: 'yellow',
+    image: 'assets/step-6-yellow-train.svg',
+    imageAlt: 'Ilustração de trem amarelo com placa de direção para Vila Sônia.',
     map: [
       ['Paulista', 'yellow'],
       ['→', 'arrow'],
@@ -77,8 +95,11 @@ const steps = [
     id: 7,
     tag: 'Chegada',
     title: 'Fim da missão',
-    description: 'Pronto! Agora é só descer na estação final desejada da Linha 4-Amarela, seguindo o sentido Vila Sônia.',
+    description: 'Pronto! Agora é só seguir até a sua estação final na Linha 4-Amarela, sempre no sentido Vila Sônia.',
+    hint: 'Você conseguiu! Se precisar, mostre este site para pedir ajuda.',
     color: 'yellow',
+    image: 'assets/step-7-destination.svg',
+    imageAlt: 'Ilustração lúdica de chegada com trem, estrelas e placa de destino.',
     map: [
       ['Linha 4-Amarela', 'yellow'],
       ['→', 'arrow'],
@@ -124,6 +145,7 @@ function toggleCompleted(id) {
     showToast('Etapa desmarcada.');
   } else {
     state.completed.push(id);
+    flashCelebration();
     showToast('Boa! Etapa marcada como feita.');
   }
   saveState();
@@ -142,11 +164,7 @@ function renderMiniMap(container, map) {
   map.forEach(([label, kind]) => {
     const el = document.createElement('span');
     el.textContent = label;
-    if (kind === 'arrow') {
-      el.className = 'arrow-pill';
-    } else {
-      el.className = `station-pill ${kind}`;
-    }
+    el.className = kind === 'arrow' ? 'arrow-pill' : `station-pill ${kind}`;
     container.appendChild(el);
   });
 }
@@ -163,13 +181,18 @@ function render() {
     const title = node.querySelector('.step-title');
     const status = node.querySelector('.step-status');
     const description = node.querySelector('.step-description');
+    const hint = node.querySelector('.step-hint');
     const miniMap = node.querySelector('.mini-map');
+    const image = node.querySelector('.step-visual');
 
     number.textContent = step.id;
     number.classList.add(step.color);
     tag.textContent = step.tag;
     title.textContent = step.title;
     description.textContent = step.description;
+    hint.textContent = step.hint;
+    image.src = step.image;
+    image.alt = step.imageAlt;
 
     renderMiniMap(miniMap, step.map);
 
@@ -182,10 +205,12 @@ function render() {
 
     if (allExpanded || index === 0 || (!completed && index === state.completed.length)) {
       node.classList.add('open');
+      mainBtn.setAttribute('aria-expanded', 'true');
     }
 
     mainBtn.addEventListener('click', () => {
-      node.classList.toggle('open');
+      const open = node.classList.toggle('open');
+      mainBtn.setAttribute('aria-expanded', String(open));
     });
 
     doneBtn.addEventListener('click', (event) => {
@@ -210,6 +235,14 @@ function showToast(message) {
   toast.textContent = message;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 2200);
+}
+
+function flashCelebration() {
+  document.body.classList.remove('party');
+  requestAnimationFrame(() => {
+    document.body.classList.add('party');
+    setTimeout(() => document.body.classList.remove('party'), 1050);
+  });
 }
 
 function updateConnectionStatus() {

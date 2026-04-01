@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320" role="img" aria-label="Corredor de transferência para linha verde">
+  <rect width="420" height="320" rx="30" fill="#1a2442"/>
+  <rect x="0" y="220" width="420" height="100" fill="#c7d2fe" opacity="0.48"/>
+  <path d="M100 220V74l110 44 110-44v146" fill="#edf2ff"/>
+  <rect x="62" y="56" width="120" height="34" rx="17" fill="#22c55e"/>
+  <text x="78" y="78" font-family="Arial" font-size="18" font-weight="700" fill="#052e16">Linha 2-Verde</text>
+  <rect x="236" y="52" width="126" height="38" rx="19" fill="#f8fafc" opacity="0.9"/>
+  <text x="260" y="76" font-family="Arial" font-size="18" font-weight="700" fill="#334155">Troca aqui</text>
+  <path d="M212 84v86" stroke="#8b5cf6" stroke-width="10" stroke-linecap="round"/>
+  <path d="M192 150l20 20 20-20" fill="none" stroke="#8b5cf6" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

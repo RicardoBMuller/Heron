@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#6d28d9" />
-  <meta name="description" content="Guia offline e interativo do trajeto de metrô para celular." />
+  <meta name="description" content="Guia offline, interativo e lúdico do trajeto de metrô para celular." />
   <title>Missão Metrô</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
@@ -12,48 +12,77 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="bg-decoration bg-1"></div>
+  <div class="bg-decoration bg-2"></div>
+
   <div class="app-shell">
     <header class="hero card">
-      <div class="hero-top">
-        <div>
-          <p class="eyebrow">Guia de viagem</p>
-          <h1>Missão Metrô</h1>
-          <p class="subtitle">Toque em cada etapa até chegar ao destino.</p>
+      <div class="hero-copy">
+        <p class="eyebrow">Guia de viagem offline</p>
+        <h1>Missão Metrô</h1>
+        <p class="subtitle">Um passo de cada vez. Toque nas etapas e acompanhe a aventura até o destino.</p>
+
+        <div class="hero-badges">
+          <span class="hero-pill">🚇 Linha Prata</span>
+          <span class="hero-pill">💚 Linha Verde</span>
+          <span class="hero-pill">🌟 Linha Amarela</span>
         </div>
-        <div class="badge" id="connectionBadge">Offline pronto</div>
+
+        <div class="progress-wrap">
+          <div class="progress-label-row">
+            <span>Progresso da missão</span>
+            <strong id="progressText">0%</strong>
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <button id="expandAllBtn" class="ghost-btn" type="button">Abrir tudo</button>
+          <button id="resetBtn" class="ghost-btn danger" type="button">Recomeçar</button>
+          <div class="badge" id="connectionBadge">Offline pronto</div>
+        </div>
       </div>
 
-      <div class="progress-wrap">
-        <div class="progress-label-row">
-          <span>Progresso da missão</span>
-          <strong id="progressText">0%</strong>
-        </div>
-        <div class="progress-bar" aria-hidden="true">
-          <div id="progressFill"></div>
-        </div>
-      </div>
-
-      <div class="hero-actions">
-        <button id="expandAllBtn" class="ghost-btn" type="button">Abrir tudo</button>
-        <button id="resetBtn" class="ghost-btn danger" type="button">Recomeçar</button>
+      <div class="hero-visual-wrap">
+        <img class="hero-visual" src="assets/hero-scene.svg" alt="Ilustração colorida de uma criança seguindo um trem e placas de estação." />
+        <div class="floating-sticker sticker-1">🎟️</div>
+        <div class="floating-sticker sticker-2">🗺️</div>
+        <div class="floating-sticker sticker-3">⭐</div>
       </div>
     </header>
 
     <main>
       <section class="card intro-card">
-        <div class="intro-icon">🚇</div>
+        <div class="intro-media">
+          <img src="assets/route-board.svg" alt="Quadro ilustrado mostrando o caminho entre as linhas do metrô." />
+        </div>
         <div>
           <h2>Seu caminho</h2>
           <p>
             Saída: <strong>São Lucas</strong> → troca na <strong>Vila Prudente</strong> → seguir na <strong>Linha 2-Verde</strong> até <strong>Consolação</strong> → andar até <strong>Paulista</strong> → pegar a <strong>Linha 4-Amarela</strong> sentido <strong>Vila Sônia</strong>.
           </p>
+          <div class="route-legend">
+            <span class="legend-pill silver">Prata</span>
+            <span class="legend-pill green">Verde</span>
+            <span class="legend-pill walk">Caminhada</span>
+            <span class="legend-pill yellow">Amarela</span>
+          </div>
         </div>
       </section>
 
       <section id="missionSteps" class="steps"></section>
 
       <section class="card tips-card">
-        <h2>Dicas rápidas</h2>
+        <div class="section-head">
+          <div>
+            <h2>Dicas rápidas</h2>
+            <p>Coisas simples que ajudam muito durante o caminho.</p>
+          </div>
+          <img class="section-spot-image" src="assets/station-signs.svg" alt="Placas ilustradas de estação e setas de direção." />
+        </div>
+
         <div class="tips-grid">
           <article>
             <span>👀</span>
@@ -69,13 +98,19 @@
           </article>
           <article>
             <span>📱</span>
-            <p>Este site guarda o progresso mesmo sem internet, depois do primeiro acesso.</p>
+            <p>Depois do primeiro acesso, o site continua funcionando sem internet.</p>
           </article>
         </div>
       </section>
 
       <section class="card emergency-card">
-        <h2>Se ficar em dúvida</h2>
+        <div class="section-head">
+          <div>
+            <h2>Se ficar em dúvida</h2>
+            <p>Respire fundo e use este plano.</p>
+          </div>
+          <img class="section-spot-image" src="assets/help-scene.svg" alt="Ilustração de estação com balcão de ajuda e funcionário." />
+        </div>
         <ul>
           <li>Peça ajuda a um funcionário da estação.</li>
           <li>Mostre a tela do celular com o próximo passo.</li>
@@ -87,7 +122,7 @@
 
   <template id="stepTemplate">
     <article class="step-card card">
-      <button class="step-main" type="button">
+      <button class="step-main" type="button" aria-expanded="false">
         <div class="step-left">
           <div class="step-number"></div>
           <div>
@@ -101,10 +136,16 @@
         </div>
       </button>
       <div class="step-content">
-        <p class="step-description"></p>
-        <div class="mini-map"></div>
-        <div class="check-area">
-          <button class="done-btn" type="button">Marcar como feito</button>
+        <div class="step-visual-wrap">
+          <img class="step-visual" alt="" />
+        </div>
+        <div class="step-text-wrap">
+          <p class="step-description"></p>
+          <p class="step-hint"></p>
+          <div class="mini-map"></div>
+          <div class="check-area">
+            <button class="done-btn" type="button">Marcar como feito</button>
+          </div>
         </div>
       </div>
     </article>

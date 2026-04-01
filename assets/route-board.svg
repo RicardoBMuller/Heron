@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 260" role="img" aria-label="Quadro com rota das linhas do metrô">
+  <rect width="320" height="260" rx="28" fill="#231942"/>
+  <rect x="24" y="24" width="272" height="212" rx="20" fill="#f8fafc"/>
+  <text x="40" y="58" font-family="Arial" font-size="20" font-weight="700" fill="#1f2937">Rota da missão</text>
+  <path d="M52 98h48c18 0 18-26 36-26h42" fill="none" stroke="#9ca3af" stroke-width="12" stroke-linecap="round"/>
+  <path d="M178 72h36c24 0 20 34 42 34h20" fill="none" stroke="#16a34a" stroke-width="12" stroke-linecap="round"/>
+  <path d="M114 162h82c18 0 18-36 44-36h34" fill="none" stroke="#ec4899" stroke-width="12" stroke-linecap="round"/>
+  <path d="M196 162h48" fill="none" stroke="#eab308" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="52" cy="98" r="14" fill="#9ca3af"/>
+  <circle cx="114" cy="98" r="14" fill="#9ca3af"/>
+  <circle cx="178" cy="72" r="14" fill="#16a34a"/>
+  <circle cx="274" cy="106" r="14" fill="#16a34a"/>
+  <circle cx="196" cy="162" r="14" fill="#ec4899"/>
+  <circle cx="244" cy="162" r="14" fill="#eab308"/>
+  <text x="34" y="126" font-family="Arial" font-size="14" font-weight="700" fill="#475569">São Lucas</text>
+  <text x="86" y="126" font-family="Arial" font-size="14" font-weight="700" fill="#475569">Vila Prudente</text>
+  <text x="144" y="54" font-family="Arial" font-size="14" font-weight="700" fill="#166534">Linha 2</text>
+  <text x="234" y="132" font-family="Arial" font-size="14" font-weight="700" fill="#166534">Consolação</text>
+  <text x="148" y="190" font-family="Arial" font-size="14" font-weight="700" fill="#9d174d">Paulista</text>
+  <text x="220" y="190" font-family="Arial" font-size="14" font-weight="700" fill="#854d0e">Linha 4</text>
+</svg>

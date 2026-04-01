@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320" role="img" aria-label="Plataforma com placa Consolação">
+  <rect width="420" height="320" rx="30" fill="#201942"/>
+  <rect x="0" y="238" width="420" height="82" fill="#cbd5e1" opacity="0.48"/>
+  <rect x="86" y="46" width="250" height="44" rx="22" fill="#22c55e"/>
+  <text x="134" y="74" font-family="Arial" font-size="22" font-weight="700" fill="#052e16">Consolação</text>
+  <rect x="58" y="106" width="302" height="98" rx="22" fill="#ffffff" opacity="0.12" stroke="#e2e8f0"/>
+  <rect x="86" y="126" width="60" height="42" rx="8" fill="#93c5fd"/>
+  <rect x="156" y="126" width="60" height="42" rx="8" fill="#93c5fd"/>
+  <rect x="226" y="126" width="60" height="42" rx="8" fill="#93c5fd"/>
+  <rect x="296" y="126" width="36" height="56" rx="8" fill="#cbd5e1"/>
+  <path d="M188 212h44" stroke="#facc15" stroke-width="10" stroke-linecap="round"/>
+  <path d="M216 194l18 18-18 18" fill="none" stroke="#facc15" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
