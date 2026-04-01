@@ -1,26 +1,16 @@
 {
   "name": "Missão Metrô",
   "short_name": "Missão Metrô",
-  "description": "Guia offline e interativo do trajeto de metrô.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#160f33",
+  "background_color": "#f4f0ff",
   "theme_color": "#6d28d9",
   "icons": [
     {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon.svg",
+      "src": "assets/hero-train.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
