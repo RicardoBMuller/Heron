@@ -1,240 +1,350 @@
-const STORAGE_KEY = 'metro-missao-v2';
-const THEME_KEY = 'metro-missao-theme';
-
 const steps = [
   {
-    id: 1,
-    kicker: 'Etapa 1',
-    title: 'Entrar em São Lucas',
-    summary: 'Comece na estação São Lucas da Linha Prata.',
-    details: 'Entre na estação São Lucas e pegue o monotrilho no sentido Vila Prudente. Confira o nome da estação nas placas.',
-    line: 'Linha Prata',
-    lineColor: '#9CA3AF',
-    type: 'Embarcar',
-    icon: 'assets/step-station.svg',
-    mapLabel: 'São Lucas'
+    title: 'Entrar na estação São Lucas',
+    line: 'Linha 15-Prata',
+    description: 'Entre na estação São Lucas e siga as placas da Linha 15-Prata até embarcar.',
+    tip: 'Olhe sempre para o nome da estação e para as placas. Se tiver dúvida, peça ajuda a um funcionário do metrô.',
+    checks: ['Entrar na estação', 'Procurar a Linha 15-Prata', 'Esperar o trem com calma'],
+    image: 'assets/step-1.svg',
+    voice: 'Primeiro passo. Entre na estação São Lucas e siga as placas da Linha 15 Prata.'
   },
   {
-    id: 2,
-    kicker: 'Etapa 2',
     title: 'Ir até Vila Prudente',
-    summary: 'Siga no monotrilho até a estação Vila Prudente.',
-    details: 'Permaneça no trem até chegar em Vila Prudente. Quando descer, procure as placas da Linha Verde.',
-    line: 'Linha Prata',
-    lineColor: '#9CA3AF',
-    type: 'Viajar',
-    icon: 'assets/step-train-prata.svg',
-    mapLabel: 'Vila Prudente'
+    line: 'Linha 15-Prata',
+    description: 'Continue no monotrilho até chegar à estação Vila Prudente.',
+    tip: 'Fique atento ao nome da estação quando o trem parar. Desça somente em Vila Prudente.',
+    checks: ['Entrar no trem', 'Acompanhar as estações', 'Descer em Vila Prudente'],
+    image: 'assets/step-2.svg',
+    voice: 'Segundo passo. Vá de São Lucas até Vila Prudente e desça nessa estação.'
   },
   {
-    id: 3,
-    kicker: 'Etapa 3',
-    title: 'Pegar a Linha Verde',
-    summary: 'Entre no metrô sentido Vila Madalena.',
-    details: 'Na integração, siga para a Linha Verde e embarque no metrô com destino a Vila Madalena. Depois siga até Consolação.',
-    line: 'Linha Verde',
-    lineColor: '#16A34A',
-    type: 'Trocar de linha',
-    icon: 'assets/step-train-green.svg',
-    mapLabel: 'Linha Verde'
+    title: 'Trocar para a Linha 2-Verde',
+    line: 'Integração',
+    description: 'Em Vila Prudente, siga a sinalização para a Linha 2-Verde, sentido Vila Madalena.',
+    tip: 'Procure as placas verdes. Vá com calma e só siga para o lado escrito Vila Madalena.',
+    checks: ['Seguir as placas verdes', 'Confirmar sentido Vila Madalena', 'Entrar no metrô correto'],
+    image: 'assets/step-3.svg',
+    voice: 'Terceiro passo. Em Vila Prudente, troque para a Linha 2 Verde no sentido Vila Madalena.'
   },
   {
-    id: 4,
-    kicker: 'Etapa 4',
     title: 'Descer em Consolação',
-    summary: 'Saia do trem e caminhe até Paulista.',
-    details: 'Ao chegar em Consolação, siga as placas de transferência para Paulista, que faz ligação com a Linha Amarela.',
-    line: 'Transferência',
-    lineColor: '#F59E0B',
-    type: 'Caminhar',
-    icon: 'assets/step-walk.svg',
-    mapLabel: 'Paulista'
+    line: 'Linha 2-Verde',
+    description: 'Viaje na Linha 2-Verde e desça na estação Consolação.',
+    tip: 'Quando ouvir ou ver o nome Consolação, prepare-se para descer com calma.',
+    checks: ['Seguir viagem na Linha 2-Verde', 'Ficar atento ao nome das estações', 'Descer em Consolação'],
+    image: 'assets/step-4.svg',
+    voice: 'Quarto passo. Siga pela Linha 2 Verde e desça em Consolação.'
   },
   {
-    id: 5,
-    kicker: 'Etapa 5',
-    title: 'Pegar a Linha Amarela',
-    summary: 'Entre no sentido Vila Sônia e vá até o destino.',
-    details: 'Em Paulista, pegue a Linha Amarela no sentido Vila Sônia. Siga até a estação Vila Sônia e pronto: missão concluída!',
-    line: 'Linha Amarela',
-    lineColor: '#EAB308',
-    type: 'Destino final',
-    icon: 'assets/step-train-yellow.svg',
-    mapLabel: 'Vila Sônia'
+    title: 'Andar até Paulista',
+    line: 'Caminhada interna',
+    description: 'Depois de descer em Consolação, siga a ligação interna a pé até a estação Paulista, da Linha 4-Amarela.',
+    tip: 'Basta seguir as placas amarelas da Linha 4. É uma conexão a pé dentro da estação.',
+    checks: ['Sair da plataforma', 'Seguir as placas amarelas', 'Chegar à estação Paulista'],
+    image: 'assets/step-5.svg',
+    voice: 'Quinto passo. Em Consolação, caminhe pela ligação interna até a estação Paulista da Linha 4 Amarela.'
+  },
+  {
+    title: 'Pegar a Linha 4-Amarela até Vila Sônia',
+    line: 'Linha 4-Amarela',
+    description: 'Na estação Paulista, pegue o metrô sentido Vila Sônia e vá até a estação final.',
+    tip: 'Confirme que o sentido é Vila Sônia. Quando chegar, você terminou a missão.',
+    checks: ['Entrar na Linha 4-Amarela', 'Confirmar sentido Vila Sônia', 'Descer em Vila Sônia'],
+    image: 'assets/step-6.svg',
+    voice: 'Último passo. Pegue a Linha 4 Amarela no sentido Vila Sônia e siga até a estação final.'
   }
 ];
 
-const state = {
-  open: new Set(),
-  done: new Set(loadProgress()),
-};
+const storageKey = 'metro_missao_premium_progress_v1';
+let state = loadState();
+let deferredPrompt = null;
 
-const stepsContainer = document.getElementById('steps');
-const template = document.getElementById('stepTemplate');
-const progressFill = document.getElementById('progressFill');
-const progressText = document.getElementById('progressText');
-const doneCount = document.getElementById('doneCount');
-const starsBox = document.getElementById('starsBox');
-const lineVisual = document.getElementById('lineVisual');
-const networkPill = document.getElementById('networkPill');
-const themeToggle = document.getElementById('themeToggle');
+const currentTitle = document.getElementById('currentTitle');
+const currentDescription = document.getElementById('currentDescription');
+const currentTip = document.getElementById('currentTip');
+const currentIllustration = document.getElementById('currentIllustration');
+const currentLineTag = document.getElementById('currentLineTag');
+const stepCounter = document.getElementById('stepCounter');
+const miniChecks = document.getElementById('miniChecks');
+const mascotText = document.getElementById('mascotText');
+const mascotTitle = document.getElementById('mascotTitle');
+const progressPercent = document.getElementById('progressPercent');
+const progressCircle = document.getElementById('progressCircle');
+const quickRoute = document.getElementById('quickRoute');
+const netStatus = document.getElementById('netStatus');
+const saveStatus = document.getElementById('saveStatus');
+const nextBtn = document.getElementById('nextBtn');
+const voiceBtn = document.getElementById('voiceBtn');
+const expandBtn = document.getElementById('expandBtn');
+const resetBtn = document.getElementById('resetBtn');
+const timelineSection = document.getElementById('timelineSection');
+const stepsList = document.getElementById('stepsList');
+const finishCard = document.getElementById('finishCard');
+const celebrateVoiceBtn = document.getElementById('celebrateVoiceBtn');
+const installBtn = document.getElementById('installBtn');
+const stepTemplate = document.getElementById('stepTemplate');
 
-function loadProgress() {
+function loadState() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.done)) return defaultState();
+    return {
+      done: steps.map((_, i) => Boolean(parsed.done[i])),
+      expanded: false
+    };
   } catch {
-    return [];
+    return defaultState();
   }
 }
 
-function saveProgress() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.done]));
+function defaultState() {
+  return {
+    done: steps.map(() => false),
+    expanded: false
+  };
 }
 
-function renderMap() {
-  lineVisual.innerHTML = '';
-  steps.forEach((step, index) => {
-    const wrap = document.createElement('div');
-    const isDone = state.done.has(step.id);
-    wrap.className = `line-stop ${isDone ? 'done' : ''}`;
-
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.setAttribute('aria-label', `Focar na etapa ${index + 1}`);
-    button.innerHTML = `<div class="line-dot" style="background:${step.lineColor}"></div><span>${step.mapLabel}</span>`;
-    button.addEventListener('click', () => {
-      const card = document.querySelector(`[data-step-id="${step.id}"]`);
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-
-    wrap.appendChild(button);
-    lineVisual.appendChild(wrap);
-  });
+function saveState() {
+  localStorage.setItem(storageKey, JSON.stringify({ done: state.done }));
+  saveStatus.textContent = 'Progresso salvo';
+  saveStatus.classList.add('success');
 }
 
-function renderSteps() {
-  stepsContainer.innerHTML = '';
-  steps.forEach((step) => {
-    const fragment = template.content.cloneNode(true);
-    const card = fragment.querySelector('.step-card');
-    const mainBtn = fragment.querySelector('.step-main');
-    const details = fragment.querySelector('.step-details');
-    const icon = fragment.querySelector('.step-icon');
-    const kicker = fragment.querySelector('.step-kicker');
-    const title = fragment.querySelector('h3');
-    const summary = fragment.querySelector('.step-summary');
-    const detailText = fragment.querySelector('.step-detail-text');
-    const chipLine = fragment.querySelector('.chip-line');
-    const chipType = fragment.querySelector('.chip-type');
-    const markBtn = fragment.querySelector('.mark-btn');
-
-    const isOpen = state.open.has(step.id);
-    const isDone = state.done.has(step.id);
-
-    card.dataset.stepId = step.id;
-    icon.src = step.icon;
-    icon.alt = `Ilustração da etapa ${step.id}`;
-    kicker.textContent = step.kicker;
-    title.textContent = step.title;
-    summary.textContent = step.summary;
-    detailText.textContent = step.details;
-    chipLine.textContent = step.line;
-    chipLine.style.background = step.lineColor;
-    chipType.textContent = step.type;
-    markBtn.textContent = isDone ? 'Concluído! 🎉' : 'Marcar como concluído';
-
-    if (isOpen) {
-      card.classList.add('open');
-      details.hidden = false;
-    }
-    if (isDone) card.classList.add('done');
-
-    mainBtn.addEventListener('click', () => {
-      if (state.open.has(step.id)) {
-        state.open.delete(step.id);
-      } else {
-        state.open.add(step.id);
-      }
-      renderSteps();
-    });
-
-    markBtn.addEventListener('click', () => {
-      state.done.add(step.id);
-      state.open.add(step.id);
-      saveProgress();
-      updateProgress();
-      renderSteps();
-      renderMap();
-      celebrate();
-    });
-
-    stepsContainer.appendChild(fragment);
-  });
+function getCurrentIndex() {
+  const firstUndone = state.done.findIndex(v => !v);
+  return firstUndone === -1 ? steps.length - 1 : firstUndone;
 }
 
-function updateProgress() {
-  const total = steps.length;
-  const done = state.done.size;
-  const percentage = (done / total) * 100;
-  progressFill.style.width = `${percentage}%`;
-  doneCount.textContent = String(done);
-  starsBox.textContent = `⭐ ${done}`;
-
-  if (done === 0) progressText.textContent = 'Começando a aventura';
-  else if (done < total) progressText.textContent = 'Muito bem! Continue assim';
-  else progressText.textContent = 'Missão concluída! Você chegou 🎉';
+function completedCount() {
+  return state.done.filter(Boolean).length;
 }
 
-function celebrate() {
-  if (navigator.vibrate) navigator.vibrate(40);
+function isFinished() {
+  return completedCount() === steps.length;
 }
 
-function resetAll() {
-  state.done.clear();
-  state.open.clear();
-  saveProgress();
-  renderSteps();
-  renderMap();
-  updateProgress();
+function render() {
+  renderStatus();
+  renderProgress();
+  renderQuickRoute();
+  renderCurrent();
+  renderTimeline();
+  finishCard.classList.toggle('hidden', !isFinished());
+  nextBtn.textContent = isFinished() ? 'Tudo concluído' : 'Próximo passo';
+  nextBtn.disabled = isFinished();
+  nextBtn.style.opacity = isFinished() ? '0.6' : '1';
 }
 
-function openAll() {
-  steps.forEach(step => state.open.add(step.id));
-  renderSteps();
-}
-
-function updateNetwork() {
+function renderStatus() {
   const online = navigator.onLine;
-  networkPill.textContent = online ? 'Pronto para offline ✓' : 'Usando offline ✓';
-  networkPill.className = `pill pill-status ${online ? 'online' : 'offline'}`;
+  netStatus.textContent = online ? 'Online e pronto para offline' : 'Modo offline ativo';
+  netStatus.className = `status-chip ${online ? 'success' : 'warning'}`;
 }
 
-function initTheme() {
-  const saved = localStorage.getItem(THEME_KEY);
-  if (saved === 'dark') document.body.classList.add('dark');
-  themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+function renderProgress() {
+  const done = completedCount();
+  const percent = Math.round((done / steps.length) * 100);
+  progressPercent.textContent = `${percent}%`;
+  const circumference = 314;
+  const offset = circumference - (circumference * percent) / 100;
+  progressCircle.style.strokeDashoffset = String(offset);
 }
 
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  const dark = document.body.classList.contains('dark');
-  localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
-  themeToggle.textContent = dark ? '☀️' : '🌙';
+function renderQuickRoute() {
+  quickRoute.innerHTML = '';
+  const activeIndex = getCurrentIndex();
+  const labels = ['São Lucas', 'Vila Prudente', 'Linha Verde', 'Consolação', 'Paulista', 'Vila Sônia'];
+
+  labels.forEach((label, i) => {
+    const node = document.createElement('div');
+    node.className = 'route-node';
+    if (state.done[i]) node.classList.add('done');
+    if (!state.done[i] && i === activeIndex) node.classList.add('active');
+
+    const bullet = document.createElement('div');
+    bullet.className = 'route-bullet';
+    bullet.textContent = state.done[i] ? '✓' : String(i + 1);
+
+    const text = document.createElement('div');
+    text.className = 'route-label';
+    text.textContent = label;
+
+    node.append(bullet, text);
+    quickRoute.appendChild(node);
+  });
+}
+
+function renderCurrent() {
+  const index = getCurrentIndex();
+  const step = steps[index];
+
+  currentTitle.textContent = isFinished() ? 'Você chegou em Vila Sônia' : step.title;
+  currentDescription.textContent = isFinished()
+    ? 'Parabéns! Seu trajeto terminou. Agora é só sair com calma da estação.'
+    : step.description;
+  currentTip.textContent = isFinished()
+    ? 'Se precisar, olhe as placas de saída e siga com calma.'
+    : step.tip;
+  currentIllustration.src = isFinished() ? 'assets/trophy.svg' : step.image;
+  currentLineTag.textContent = isFinished() ? 'Destino final' : step.line;
+  stepCounter.textContent = isFinished()
+    ? 'Etapas concluídas'
+    : `Etapa ${index + 1} de ${steps.length}`;
+
+  miniChecks.innerHTML = '';
+  const checks = isFinished()
+    ? ['Viagem concluída', 'Chegada em Vila Sônia', 'Agora é só seguir a saída']
+    : step.checks;
+
+  checks.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'mini-check';
+    div.innerHTML = `<span class="mini-dot">✓</span><span>${item}</span>`;
+    miniChecks.appendChild(div);
+  });
+
+  if (isFinished()) {
+    mascotTitle.textContent = 'Boa! Você conseguiu.';
+    mascotText.textContent = 'Missão concluída com sucesso. Você chegou ao destino.';
+  } else {
+    const messages = [
+      'Tudo certo até aqui. Vamos passo a passo.',
+      'Muito bem! Continue olhando as placas.',
+      'Você está indo super bem. Falta pouco.',
+      'Agora atenção para a troca de linha.',
+      'Siga as placas amarelas com calma.',
+      'Última parte. Já já você chega.'
+    ];
+    mascotTitle.textContent = 'Metroquinho te acompanha';
+    mascotText.textContent = messages[index] || 'Continue com calma e atenção.';
+  }
+}
+
+function renderTimeline() {
+  timelineSection.classList.toggle('hidden', !state.expanded);
+  stepsList.innerHTML = '';
+
+  steps.forEach((step, index) => {
+    const fragment = stepTemplate.content.cloneNode(true);
+    const item = fragment.querySelector('.step-item');
+    const main = fragment.querySelector('.step-main');
+    const badge = fragment.querySelector('.step-badge');
+    const thumb = fragment.querySelector('.step-thumb');
+    const title = fragment.querySelector('h3');
+    const line = fragment.querySelector('.step-line');
+    const desc = fragment.querySelector('.step-copy p');
+    const stateTag = fragment.querySelector('.step-state');
+    const stepTip = fragment.querySelector('.step-tip');
+    const doneBtn = fragment.querySelector('.mini-done-btn');
+
+    badge.textContent = index + 1;
+    thumb.src = step.image;
+    thumb.alt = `Ilustração da etapa ${index + 1}`;
+    title.textContent = step.title;
+    line.textContent = step.line;
+    desc.textContent = step.description;
+    stepTip.innerHTML = `<strong>Dica:</strong> ${step.tip}`;
+
+    if (state.done[index]) {
+      item.classList.add('done');
+      stateTag.textContent = 'Feita';
+      doneBtn.textContent = 'Etapa concluída';
+    }
+
+    main.addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+
+    doneBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      markStep(index);
+    });
+
+    stepsList.appendChild(fragment);
+  });
+}
+
+function markStep(index) {
+  state.done[index] = true;
+  saveState();
+  render();
+  if (isFinished()) {
+    speak('Parabéns. Você concluiu a missão e chegou a Vila Sônia.');
+  }
+}
+
+nextBtn.addEventListener('click', () => {
+  const index = getCurrentIndex();
+  if (!isFinished()) {
+    markStep(index);
+  }
 });
 
-document.getElementById('resetBtn').addEventListener('click', resetAll);
-document.getElementById('openAllBtn').addEventListener('click', openAll);
-window.addEventListener('online', updateNetwork);
-window.addEventListener('offline', updateNetwork);
+voiceBtn.addEventListener('click', () => {
+  const index = getCurrentIndex();
+  const text = isFinished()
+    ? 'Parabéns. Você chegou ao destino final. Agora é só sair com calma da estação Vila Sônia.'
+    : steps[index].voice;
+  speak(text);
+});
+
+celebrateVoiceBtn?.addEventListener('click', () => {
+  speak('Parabéns! Missão cumprida. Você chegou em Vila Sônia.');
+});
+
+expandBtn.addEventListener('click', () => {
+  state.expanded = !state.expanded;
+  expandBtn.textContent = state.expanded ? 'Esconder etapas' : 'Ver todas as etapas';
+  renderTimeline();
+  if (state.expanded) {
+    timelineSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+resetBtn.addEventListener('click', () => {
+  state = defaultState();
+  saveState();
+  render();
+  speak('Tudo bem. A missão foi reiniciada. Vamos começar de novo.');
+});
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) {
+    mascotText.textContent = text;
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'pt-BR';
+  utterance.rate = 1;
+  utterance.pitch = 1.08;
+  utterance.volume = 1;
+  window.speechSynthesis.speak(utterance);
+}
+
+window.addEventListener('online', renderStatus);
+window.addEventListener('offline', renderStatus);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(console.error);
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
   });
 }
 
-initTheme();
-updateNetwork();
-renderMap();
-renderSteps();
-updateProgress();
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredPrompt = event;
+  installBtn.classList.remove('hidden');
+});
+
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.classList.add('hidden');
+});
+
+render();

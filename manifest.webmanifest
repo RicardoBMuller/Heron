@@ -3,12 +3,13 @@
   "short_name": "Missão Metrô",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f0ff",
-  "theme_color": "#6d28d9",
+  "background_color": "#0b1020",
+  "theme_color": "#6d5efc",
+  "description": "Guia interativo e offline para acompanhar o trajeto de metrô.",
   "icons": [
     {
-      "src": "assets/hero-train.svg",
-      "sizes": "any",
+      "src": "assets/mascot.svg",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
     }

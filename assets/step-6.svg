@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <rect width="800" height="520" rx="48" fill="#111833"/>
+  <rect x="90" y="90" width="620" height="120" rx="32" fill="#ffd24d"/>
+  <text x="400" y="166" text-anchor="middle" font-family="Arial" font-size="46" font-weight="800" fill="#473500">Vila Sônia</text>
+  <rect x="145" y="250" width="510" height="130" rx="28" fill="#fff6cf"/>
+  <rect x="200" y="278" width="120" height="72" rx="18" fill="#ffd24d"/>
+  <rect x="480" y="278" width="120" height="72" rx="18" fill="#ffd24d"/>
+  <circle cx="220" cy="390" r="22" fill="#232d56"/>
+  <circle cx="580" cy="390" r="22" fill="#232d56"/>
+</svg>

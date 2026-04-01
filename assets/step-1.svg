@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <rect width="800" height="520" rx="48" fill="#101732"/>
+  <rect x="60" y="70" width="680" height="92" rx="28" fill="#7c68ff"/>
+  <text x="400" y="128" text-anchor="middle" font-family="Arial" font-size="38" font-weight="700" fill="#fff">Estação São Lucas</text>
+  <rect x="130" y="190" width="540" height="220" rx="34" fill="#dfe7ff"/>
+  <rect x="170" y="230" width="460" height="140" rx="28" fill="#bcc9f7"/>
+  <rect x="240" y="260" width="100" height="76" rx="18" fill="#7c68ff"/>
+  <rect x="460" y="260" width="100" height="76" rx="18" fill="#7c68ff"/>
+  <circle cx="240" cy="404" r="18" fill="#2d355d"/>
+  <circle cx="560" cy="404" r="18" fill="#2d355d"/>
+  <path d="M90 450h620" stroke="#ffd24d" stroke-width="10" stroke-linecap="round"/>
+</svg>

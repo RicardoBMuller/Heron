@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <rect width="800" height="520" rx="48" fill="#111833"/>
+  <circle cx="400" cy="260" r="155" fill="#27c17c" opacity="0.18"/>
+  <rect x="200" y="145" width="400" height="230" rx="34" fill="#f1fff7"/>
+  <text x="400" y="225" text-anchor="middle" font-family="Arial" font-size="54" font-weight="800" fill="#1f784f">Consolação</text>
+  <path d="M250 295h300" stroke="#27c17c" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="400" cy="295" r="20" fill="#ffd24d"/>
+  <path d="M145 425h510" stroke="#fff" stroke-opacity="0.22" stroke-width="10" stroke-linecap="round"/>
+</svg>

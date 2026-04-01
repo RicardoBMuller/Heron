@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <rect width="800" height="520" rx="48" fill="#101732"/>
+  <rect x="90" y="110" width="620" height="110" rx="28" fill="#ffd24d"/>
+  <text x="400" y="180" text-anchor="middle" font-family="Arial" font-size="44" font-weight="800" fill="#4f3b00">Paulista</text>
+  <path d="M190 320c90-40 170-40 260 0" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+  <path d="M450 320l58 0" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+  <path d="M490 286l40 34-40 34" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="200" cy="350" r="30" fill="#7c68ff"/>
+  <circle cx="270" cy="350" r="30" fill="#14c8ff"/>
+</svg>

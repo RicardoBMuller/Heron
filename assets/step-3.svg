@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <rect width="800" height="520" rx="48" fill="#101732"/>
+  <rect x="90" y="80" width="620" height="130" rx="36" fill="#27c17c"/>
+  <path d="M230 145h230" stroke="#fff" stroke-width="18" stroke-linecap="round"/>
+  <path d="M430 115l45 30-45 30" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="252" y="175" font-family="Arial" font-size="38" font-weight="700" fill="#fff">Vila Madalena</text>
+  <rect x="150" y="270" width="500" height="120" rx="30" fill="#e6ffef"/>
+  <rect x="220" y="296" width="120" height="70" rx="18" fill="#27c17c"/>
+  <rect x="460" y="296" width="120" height="70" rx="18" fill="#27c17c"/>
+</svg>
