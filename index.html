@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#b8432f" />
-  <meta name="description" content="Metroquinho em estilo cartoon retrô: guia offline do metrô, trem e monotrilho de São Paulo com rota passo a passo." />
+  <meta name="theme-color" content="#6d5efc" />
+  <meta name="description" content="Metroquinho: guia offline do metrô, trem e monotrilho de São Paulo com temas escolhíveis, voz divertida e rota passo a passo." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Metroquinho" />
-  <title>Metroquinho • Cartoon offline</title>
+  <title>Metroquinho • Guia offline divertido</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="assets/mascot.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
@@ -44,7 +44,7 @@
       <img src="assets/mascot.svg" alt="Metroquinho" class="opening-splash__mascot" />
       <div class="opening-splash__mini-train">🚇</div>
       <h2>Olá! Eu sou o Metroquinho 🚇</h2>
-      <p>Vou te ajudar com um caminho fácil, brincalhão e cheio de movimento.</p>
+      <p>Vou te ajudar com um caminho fácil, divertido e cheio de surpresas legais.</p>
       <button id="openingSplashBtn" class="primary-btn opening-splash__btn" type="button">Começar aventura</button>
     </div>
   </div>
@@ -70,6 +70,33 @@
         <span id="saveBadge" class="save-badge">Tudo salvo no aparelho</span>
         <span id="installStatusBadge" class="save-badge install-status-badge">Pode instalar no celular ou no computador</span>
       </div>
+
+      <section class="theme-picker glass" aria-label="Escolher tema visual">
+        <div class="theme-picker__head">
+          <div>
+            <p class="eyebrow">Escolha o visual</p>
+            <h2 class="theme-picker__title">Qual tema combina mais com a aventura?</h2>
+          </div>
+          <span class="theme-picker__badge">3 temas</span>
+        </div>
+        <div class="theme-options">
+          <button class="theme-option active" type="button" data-theme="premium">
+            <span class="theme-option__swatch theme-option__swatch--premium"></span>
+            <strong>Aventura Neon</strong>
+            <small>moderno, brilhante e mágico</small>
+          </button>
+          <button class="theme-option" type="button" data-theme="cartoon">
+            <span class="theme-option__swatch theme-option__swatch--cartoon"></span>
+            <strong>Cartoon Retrô</strong>
+            <small>carinha de desenho antigo</small>
+          </button>
+          <button class="theme-option" type="button" data-theme="candy">
+            <span class="theme-option__swatch theme-option__swatch--candy"></span>
+            <strong>Doce Divertido</strong>
+            <small>colorido, fofo e alegre</small>
+          </button>
+        </div>
+      </section>
 
       <div class="guide-bubble glass" id="guideBubble">
         <div class="guide-bubble-mascot-wrap">

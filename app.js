@@ -202,6 +202,7 @@ const INSTALL_DISMISS_KEY = 'mqInstallDismissed';
 const RECENT_KEY = 'metroquinho-recent-v1';
 const SPLASH_SEEN_KEY = 'metroquinho-splash-seen-v2';
 const SPLASH_SESSION_KEY = 'metroquinho-splash-session-v1';
+const THEME_KEY = 'metroquinho-theme-v1';
 const KINDS = {
   metro: 'Metrô',
   trem: 'Trem',
@@ -246,7 +247,8 @@ const dom = {
   guideBubbleTitle: document.getElementById('guideBubbleTitle'),
   guideBubbleText: document.getElementById('guideBubbleText'),
   openingSplash: document.getElementById('openingSplash'),
-  openingSplashBtn: document.getElementById('openingSplashBtn')
+  openingSplashBtn: document.getElementById('openingSplashBtn'),
+  themeOptions: Array.from(document.querySelectorAll('.theme-option'))
 };
 
 const state = {
@@ -259,8 +261,70 @@ const state = {
   recentStations: loadRecentStations(),
   deferredInstallPrompt: null,
   selectedVoice: null,
-  audioContext: null
+  audioContext: null,
+  theme: loadTheme()
 };
+
+function loadTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  return ['premium', 'cartoon', 'candy'].includes(saved) ? saved : 'premium';
+}
+
+function themeMeta() {
+  return {
+    premium: { title: 'Aventura Neon ✨', text: 'Tudo ficou brilhante, moderno e bem mágico. Parece até estação com glitter de estrela.' },
+    cartoon: { title: 'Cartoon Retrô 🎞️', text: 'Agora a aventura ficou com carinha de desenho antigo, cheia de charme e movimento.' },
+    candy: { title: 'Doce Divertido 🍭', text: 'Que tema fofinho! Agora a viagem ficou colorida, alegre e bem brincalhona.' }
+  }[state.theme] || { title: 'Metroquinho', text: 'Tema aplicado.' };
+}
+
+function applyTheme(theme, announce = false) {
+  state.theme = ['premium', 'cartoon', 'candy'].includes(theme) ? theme : 'premium';
+  document.body.dataset.theme = state.theme;
+  localStorage.setItem(THEME_KEY, state.theme);
+  dom.themeOptions?.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === state.theme));
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  const colors = { premium: '#6d5efc', cartoon: '#b8432f', candy: '#ff6fae' };
+  if (metaTheme) metaTheme.setAttribute('content', colors[state.theme] || colors.premium);
+  if (announce) {
+    const meta = themeMeta();
+    setGuideMessage(meta.title, meta.text);
+    showToast('Tema trocado com sucesso.');
+    playSound('swap');
+  }
+}
+
+function getJokeLine(step) {
+  const rideJokes = [
+    'Segura a empolgação, não o corrimão invisível. O de verdade fica aí na estação.',
+    'Se esse trem fosse de desenho, ele já tinha feito piuí três vezes.',
+    'Olhinhos atentos nas placas. É tipo caça ao tesouro, só que com trilhos.'
+  ];
+  const walkJokes = [
+    'Perninhas em ação. Nada de corrida maluca de desenho no corredor, combinado?',
+    'Passinhos rápidos, mas sem pressa de foguete. A aventura agradece.',
+    'Hora do modo explorador. Siga as placas como quem segue migalhas mágicas.'
+  ];
+  const transferJokes = [
+    'Troca de linha feita com estilo. Parece até fase secreta do mapa.',
+    'Agora é a parte do vira-vira do caminho, mas eu continuo com você.',
+    'Mudança de trilho! É tipo trocar de pista no videogame, só que olhando as placas.'
+  ];
+  const finishJokes = [
+    'Chegamos. Pode comemorar com dancinha silenciosa de campeão.',
+    'Destino alcançado. Missão cumprida sem tropeçar no nada, ufa.',
+    'Fim da aventura. Nota dez para essa equipe de super viajante.'
+  ];
+  const byType = { ride: rideJokes, walk: walkJokes, transfer: transferJokes, finish: finishJokes };
+  const pool = byType[step?.type] || rideJokes;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function buildStepSpeech(step) {
+  if (!step) return 'As instruções estão logo abaixo. Toque em ouvir na etapa que quiser.';
+  if (step.type === 'finish') return `${step.title}. ${step.text}. ${getJokeLine(step)}`;
+  return `${step.title}. ${step.text}. ${getJokeLine(step)}`;
+}
 
 function normalize(text) {
   return text
@@ -800,7 +864,7 @@ function renderTimeline() {
         setGuideMessage('Chegamos! 🏁', 'Boa viagem concluída. Agora é só sair da estação com calma e seguir o passeio.');
         playSound('success');
         animateStepScene('finish');
-        speakText('Parabéns. Você chegou ao destino. Missão completada!');
+        speakText(buildStepSpeech(step));
         showToast('Missão concluída 🎉');
       });
     } else {
@@ -810,7 +874,7 @@ function renderTimeline() {
 
     voiceBtn.addEventListener('click', () => {
       ensureAudioContext();
-      speakText(step.title + '. ' + step.text);
+      speakText(buildStepSpeech(step));
     });
 
     dom.routeTimeline.appendChild(node);
@@ -827,7 +891,7 @@ function toggleStepDone(stepId) {
       setGuideMessage('Boa! Etapa concluída. ✨', `Você terminou: ${currentStep.title}. Vamos para a próxima parte do caminho.`);
       playSound('done');
       animateStepScene(currentStep.type);
-      speakText(currentStep.title + '. Etapa concluída. Quando quiser, toque em ouvir na próxima etapa.');
+      speakText(`${currentStep.title}. Etapa concluída. Quando quiser, toque em ouvir na próxima etapa. ${getJokeLine(currentStep)}`);
     }
   }
   saveAppState();
@@ -1114,8 +1178,8 @@ function chooseBestVoice() {
       let score = 0;
       if (voice.lang.toLowerCase().startsWith('pt-br')) score += 8;
       else if (voice.lang.toLowerCase().startsWith('pt')) score += 5;
-      if (/female|helena|luciana|maria|brasil|natural|google/.test(name)) score += 2;
-      if (/child|kid/.test(name)) score += 1;
+      if (/female|helena|luciana|maria|brasil|natural|google|neural|online/.test(name)) score += 2;
+      if (/child|kid|fun|happy|joy|clara|leticia|luciana/.test(name)) score += 1;
       return { voice, score };
     })
     .sort((a, b) => b.score - a.score);
@@ -1141,8 +1205,10 @@ function speakText(text) {
   stopSpeech();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'pt-BR';
-  utterance.rate = 0.92;
-  utterance.pitch = 1.22;
+  const playfulRates = { premium: 0.98, cartoon: 1.02, candy: 1.06 };
+  const playfulPitch = { premium: 1.18, cartoon: 1.14, candy: 1.22 };
+  utterance.rate = playfulRates[state.theme] || 0.98;
+  utterance.pitch = playfulPitch[state.theme] || 1.18;
   utterance.volume = 1;
   if (state.selectedVoice) utterance.voice = state.selectedVoice;
   window.speechSynthesis.speak(utterance);
@@ -1194,6 +1260,10 @@ function bindEvents() {
 
   window.addEventListener('online', updateNetworkBadge);
   window.addEventListener('offline', updateNetworkBadge);
+  dom.themeOptions?.forEach(btn => {
+    btn.addEventListener('click', () => applyTheme(btn.dataset.theme, true));
+  });
+
   window.addEventListener('pagehide', stopSpeech);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stopSpeech();
@@ -1201,6 +1271,7 @@ function bindEvents() {
 }
 
 function init() {
+  applyTheme(state.theme);
   primeVoices();
   if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = primeVoices;

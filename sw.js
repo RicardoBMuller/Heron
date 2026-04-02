@@ -1,4 +1,4 @@
-const CACHE_NAME = 'metroquinho-cartoon-v8';
+const CACHE_NAME = 'metroquinho-themes-v9';
 const ASSETS = [
   './',
   './index.html',
