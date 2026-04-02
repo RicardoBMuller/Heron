@@ -1,147 +1,173 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#6f57ff">
-  <meta name="description" content="Metroquinho: app offline para planejar e acompanhar rotas de metrô, trem e monotrilho em São Paulo.">
-  <title>Metroquinho</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#6d5efc" />
+  <meta name="description" content="Guia offline do metrô, trem e monotrilho de São Paulo com busca de rota e acompanhamento passo a passo." />
+  <title>Metroquinho • Guia offline</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/mascot.svg" type="image/svg+xml" />
+  <link rel="preload" href="assets/mascot.svg" as="image" type="image/svg+xml" />
+  <link rel="preload" href="assets/train.svg" as="image" type="image/svg+xml" />
+  <link rel="preload" href="assets/station.svg" as="image" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app-shell">
     <header class="hero">
-      <div class="hero__top">
+      <div class="hero-top">
         <div class="brand">
-          <img src="icon-192.png" alt="Mascote Metroquinho" class="brand__icon">
+          <img src="assets/mascot.svg" alt="Mascote Metroquinho" class="mascot" />
           <div>
-            <p class="eyebrow">Seu guia de bolso</p>
+            <p class="eyebrow">Mini app premium</p>
             <h1>Metroquinho</h1>
+            <p class="subtitle">Escolha a origem e o destino. O app monta a rota e guarda tudo para funcionar offline.</p>
           </div>
         </div>
-        <button id="installBtn" class="ghost-btn hidden" type="button">Instalar app</button>
+        <button id="speakCurrentBtn" class="icon-btn" type="button" aria-label="Ouvir a orientação atual">
+          🔊
+        </button>
       </div>
 
-      <div class="hero__card">
-        <div class="mascot-bubble">
-          <span class="mascot-face">🚈</span>
-          <p id="mascotMessage">Olá! Escolha a origem e o destino. Depois, eu mostro o caminho e salvo tudo para usar sem internet.</p>
+      <div class="hero-status">
+        <span id="networkBadge" class="network-badge">Carregando…</span>
+        <span id="saveBadge" class="save-badge">Tudo salvo no aparelho</span>
+      </div>
+
+      <div class="planner-card glass">
+        <div class="planner-grid">
+          <button class="station-field" id="originField" type="button" aria-label="Escolher estação de origem">
+            <span class="field-label">Origem</span>
+            <strong id="originValue">Escolher estação</strong>
+            <small id="originMeta">Metrô, trem ou monotrilho</small>
+          </button>
+
+          <button id="swapBtn" class="swap-btn" type="button" aria-label="Trocar origem e destino">
+            ⇅
+          </button>
+
+          <button class="station-field" id="destinationField" type="button" aria-label="Escolher estação de destino">
+            <span class="field-label">Destino</span>
+            <strong id="destinationValue">Escolher estação</strong>
+            <small id="destinationMeta">Metrô, trem ou monotrilho</small>
+          </button>
         </div>
 
-        <div class="status-row">
-          <span id="networkBadge" class="badge">Verificando conexão…</span>
-          <span id="offlineBadge" class="badge badge--soft">Offline pronto após o primeiro acesso</span>
+        <div class="planner-actions">
+          <button id="findRouteBtn" class="primary-btn" type="button">Encontrar melhor caminho</button>
+          <button id="resetRouteBtn" class="ghost-btn" type="button">Limpar rota</button>
+        </div>
+
+        <div class="recent-wrap">
+          <p class="recent-title">Recentes</p>
+          <div id="recentStations" class="chips"></div>
         </div>
       </div>
     </header>
 
     <main class="content">
-      <section class="planner card">
-        <div class="card__header">
+      <section class="summary-card glass" id="summaryCard" hidden>
+        <div class="summary-head">
           <div>
-            <h2>Planejar rota</h2>
-            <p>Digite ou escolha as estações.</p>
+            <p class="eyebrow">Resumo da rota</p>
+            <h2 id="routeTitle">Sua viagem</h2>
           </div>
-          <button id="swapBtn" class="icon-btn" type="button" aria-label="Trocar origem e destino">⇅</button>
-        </div>
-
-        <div class="field-grid">
-          <label class="field">
-            <span>Origem</span>
-            <input id="originInput" list="stationsList" autocomplete="off" placeholder="Ex.: São Lucas">
-          </label>
-
-          <label class="field">
-            <span>Destino</span>
-            <input id="destinationInput" list="stationsList" autocomplete="off" placeholder="Ex.: Vila Sônia">
-          </label>
-        </div>
-
-        <datalist id="stationsList"></datalist>
-
-        <div class="filter-row">
-          <button class="chip chip--active" data-filter="all" type="button">Tudo</button>
-          <button class="chip" data-filter="metro" type="button">Metrô</button>
-          <button class="chip" data-filter="train" type="button">Trem</button>
-          <button class="chip" data-filter="monorail" type="button">Monotrilho</button>
-        </div>
-
-        <div class="actions">
-          <button id="routeBtn" class="primary-btn" type="button">Buscar rota</button>
-          <button id="clearBtn" class="secondary-btn" type="button">Limpar</button>
-        </div>
-      </section>
-
-      <section id="savedRouteSection" class="card hidden">
-        <div class="card__header">
-          <div>
-            <h2>Última rota salva</h2>
-            <p>Funciona mesmo sem sinal.</p>
-          </div>
-          <button id="reloadSavedBtn" class="ghost-btn" type="button">Usar esta rota</button>
-        </div>
-        <div id="savedRoutePreview" class="saved-route-preview"></div>
-      </section>
-
-      <section id="summarySection" class="card hidden">
-        <div class="summary-grid">
-          <div class="summary-pill">
-            <span class="summary-pill__label">Origem</span>
-            <strong id="summaryOrigin">—</strong>
-          </div>
-          <div class="summary-pill">
-            <span class="summary-pill__label">Destino</span>
-            <strong id="summaryDestination">—</strong>
-          </div>
-          <div class="summary-pill">
-            <span class="summary-pill__label">Etapas</span>
-            <strong id="summarySteps">—</strong>
-          </div>
-        </div>
-
-        <div class="progress-card">
-          <div class="progress-ring">
-            <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r="50" class="ring-bg"></circle>
-              <circle id="ringFill" cx="60" cy="60" r="50" class="ring-fill"></circle>
+          <div class="progress-ring-wrap">
+            <svg class="progress-ring" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+              <circle class="ring-bg" cx="42" cy="42" r="32"></circle>
+              <circle class="ring-progress" id="ringProgress" cx="42" cy="42" r="32"></circle>
             </svg>
-            <div class="progress-ring__center">
+            <div class="progress-center">
               <strong id="progressPercent">0%</strong>
-              <span>feito</span>
-            </div>
-          </div>
-
-          <div class="progress-side">
-            <h3>Missão da viagem</h3>
-            <p id="progressText">Marque cada etapa quando terminar.</p>
-            <div class="progress-actions">
-              <button id="speakCurrentBtn" class="secondary-btn" type="button">Ouvir etapa atual</button>
-              <button id="resetProgressBtn" class="ghost-btn" type="button">Recomeçar rota</button>
+              <small>feito</small>
             </div>
           </div>
         </div>
-      </section>
 
-      <section id="routeSection" class="card hidden">
-        <div class="card__header">
-          <div>
-            <h2>Passo a passo</h2>
-            <p>Toque para marcar o que já fez.</p>
+        <div class="route-stats">
+          <div class="stat">
+            <span class="stat-label">Tempo estimado</span>
+            <strong id="etaValue">—</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Linhas</span>
+            <strong id="linesValue">—</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Trocas</span>
+            <strong id="changesValue">—</strong>
           </div>
         </div>
-        <div id="timeline" class="timeline"></div>
+
+        <div class="timeline-head">
+          <h3>Passo a passo</h3>
+          <button id="speakRouteBtn" class="tiny-btn" type="button">Ouvir rota</button>
+        </div>
+        <div id="routeTimeline" class="route-timeline"></div>
       </section>
 
-      <section id="emptyState" class="empty-state card">
-        <div class="empty-state__art">🧭</div>
-        <h2>Pronto para começar</h2>
-        <p>Escolha a origem e o destino para o Metroquinho montar a rota.</p>
+      <section class="empty-state glass" id="emptyState">
+        <img src="assets/train.svg" alt="Ilustração de trem" class="hero-illustration" />
+        <h2>Escolha as duas estações</h2>
+        <p>Você pode digitar ou escolher qualquer estação cadastrada. Depois, o app mostra o caminho de um jeito fácil de seguir.</p>
+        <div class="empty-list">
+          <div class="empty-item"><img src="assets/station.svg" alt="" /> <span>Busca por nome da estação</span></div>
+          <div class="empty-item"><img src="assets/walk.svg" alt="" /> <span>Orientação de troca entre linhas</span></div>
+          <div class="empty-item"><img src="assets/finish.svg" alt="" /> <span>Progresso salvo no celular</span></div>
+        </div>
       </section>
     </main>
   </div>
+
+  <div class="modal" id="stationModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="sheet-handle"></div>
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow" id="modalEyebrow">Escolher</p>
+          <h2 id="modalTitle">Selecionar estação</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Fechar">✕</button>
+      </div>
+
+      <label class="search-box">
+        <span>Buscar estação</span>
+        <input id="stationSearchInput" type="search" placeholder="Ex.: São Lucas, Luz, Pinheiros..." autocomplete="off" />
+      </label>
+
+      <div class="filter-row">
+        <button type="button" class="filter-pill active" data-filter="all">Todas</button>
+        <button type="button" class="filter-pill" data-filter="metro">Metrô</button>
+        <button type="button" class="filter-pill" data-filter="trem">Trem</button>
+        <button type="button" class="filter-pill" data-filter="monotrilho">Monotrilho</button>
+      </div>
+
+      <div id="stationList" class="station-list" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <template id="timelineCardTemplate">
+    <article class="timeline-card">
+      <div class="timeline-visual">
+        <img class="timeline-icon" alt="" />
+      </div>
+      <div class="timeline-body">
+        <div class="timeline-topline">
+          <span class="line-tag"></span>
+          <span class="step-badge"></span>
+        </div>
+        <h3 class="timeline-title"></h3>
+        <p class="timeline-text"></p>
+        <div class="stations-strip"></div>
+        <div class="timeline-actions">
+          <button class="primary-btn step-btn" type="button"></button>
+          <button class="ghost-btn voice-btn" type="button">Ouvir</button>
+        </div>
+      </div>
+    </article>
+  </template>
 
   <script src="app.js"></script>
 </body>
