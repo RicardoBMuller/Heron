@@ -248,6 +248,9 @@ const dom = {
   guideBubbleText: document.getElementById('guideBubbleText'),
   openingSplash: document.getElementById('openingSplash'),
   openingSplashBtn: document.getElementById('openingSplashBtn'),
+  openThemeModalBtn: document.getElementById('openThemeModalBtn'),
+  themeModal: document.getElementById('themeModal'),
+  themeCurrentLabel: document.getElementById('themeCurrentLabel'),
   themeOptions: Array.from(document.querySelectorAll('.theme-option'))
 };
 
@@ -283,6 +286,7 @@ function applyTheme(theme, announce = false) {
   document.body.dataset.theme = state.theme;
   localStorage.setItem(THEME_KEY, state.theme);
   dom.themeOptions?.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === state.theme));
+  if (dom.themeCurrentLabel) dom.themeCurrentLabel.textContent = `Tema atual: ${themeMeta().title.replace(/\s[✨🎞️🍭]$/, '')}`;
   const metaTheme = document.querySelector('meta[name="theme-color"]');
   const colors = { premium: '#6d5efc', cartoon: '#b8432f', candy: '#ff6fae' };
   if (metaTheme) metaTheme.setAttribute('content', colors[state.theme] || colors.premium);
@@ -292,6 +296,19 @@ function applyTheme(theme, announce = false) {
     showToast('Tema trocado com sucesso.');
     playSound('swap');
   }
+  closeThemeModal();
+}
+
+function openThemeModal() {
+  if (!dom.themeModal) return;
+  dom.themeModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeThemeModal() {
+  if (!dom.themeModal) return;
+  dom.themeModal.hidden = true;
+  document.body.style.overflow = '';
 }
 
 function getJokeLine(step) {
@@ -1249,6 +1266,10 @@ function bindEvents() {
   document.querySelectorAll('[data-close-modal]').forEach(btn => {
     btn.addEventListener('click', closeModal);
   });
+  document.querySelectorAll('[data-close-theme-modal]').forEach(btn => {
+    btn.addEventListener('click', closeThemeModal);
+  });
+  dom.openThemeModalBtn?.addEventListener('click', () => { ensureAudioContext(); openThemeModal(); playSound('swap'); });
 
   document.querySelectorAll('.filter-pill').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1267,6 +1288,12 @@ function bindEvents() {
   window.addEventListener('pagehide', stopSpeech);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stopSpeech();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeModal();
+      closeThemeModal();
+    }
   });
 }
 

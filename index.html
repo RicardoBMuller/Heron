@@ -71,31 +71,13 @@
         <span id="installStatusBadge" class="save-badge install-status-badge">Pode instalar no celular ou no computador</span>
       </div>
 
-      <section class="theme-picker glass" aria-label="Escolher tema visual">
-        <div class="theme-picker__head">
-          <div>
-            <p class="eyebrow">Escolha o visual</p>
-            <h2 class="theme-picker__title">Qual tema combina mais com a aventura?</h2>
-          </div>
-          <span class="theme-picker__badge">3 temas</span>
+      <section class="theme-launcher glass" aria-label="Escolher tema visual">
+        <div class="theme-launcher__text">
+          <p class="eyebrow">Escolha o visual</p>
+          <h2 class="theme-launcher__title">Cada aventura pode ficar com uma carinha diferente.</h2>
+          <p id="themeCurrentLabel" class="theme-launcher__current">Tema atual: Aventura Neon</p>
         </div>
-        <div class="theme-options">
-          <button class="theme-option active" type="button" data-theme="premium">
-            <span class="theme-option__swatch theme-option__swatch--premium"></span>
-            <strong>Aventura Neon</strong>
-            <small>moderno, brilhante e mágico</small>
-          </button>
-          <button class="theme-option" type="button" data-theme="cartoon">
-            <span class="theme-option__swatch theme-option__swatch--cartoon"></span>
-            <strong>Cartoon Retrô</strong>
-            <small>carinha de desenho antigo</small>
-          </button>
-          <button class="theme-option" type="button" data-theme="candy">
-            <span class="theme-option__swatch theme-option__swatch--candy"></span>
-            <strong>Doce Divertido</strong>
-            <small>colorido, fofo e alegre</small>
-          </button>
-        </div>
+        <button id="openThemeModalBtn" class="theme-launcher__btn" type="button">🎨 Temas</button>
       </section>
 
       <div class="guide-bubble glass" id="guideBubble">
@@ -232,6 +214,38 @@
       </div>
 
       <div id="stationList" class="station-list" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="themeModal" hidden>
+    <div class="modal-backdrop" data-close-theme-modal></div>
+    <div class="modal-sheet modal-sheet--theme" role="dialog" aria-modal="true" aria-labelledby="themeModalTitle">
+      <div class="sheet-handle"></div>
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Temas do Metroquinho</p>
+          <h2 id="themeModalTitle">Escolha o tema da aventura</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-theme-modal aria-label="Fechar">✕</button>
+      </div>
+
+      <div class="theme-options theme-options--modal">
+        <button class="theme-option active" type="button" data-theme="premium">
+          <span class="theme-option__swatch theme-option__swatch--premium"></span>
+          <strong>Aventura Neon</strong>
+          <small>moderno, brilhante e mágico</small>
+        </button>
+        <button class="theme-option" type="button" data-theme="cartoon">
+          <span class="theme-option__swatch theme-option__swatch--cartoon"></span>
+          <strong>Cartoon Retrô</strong>
+          <small>carinha de desenho antigo</small>
+        </button>
+        <button class="theme-option" type="button" data-theme="candy">
+          <span class="theme-option__swatch theme-option__swatch--candy"></span>
+          <strong>Doce Divertido</strong>
+          <small>colorido, fofo e alegre</small>
+        </button>
+      </div>
     </div>
   </div>
 

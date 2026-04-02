@@ -192,14 +192,30 @@ h1{
   gap:8px;
 }
 
-.theme-picker{
+.theme-launcher{
   border-radius:var(--radius-xl);
   padding:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
 }
-.theme-picker__head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.theme-picker__title{margin:0;font-size:1rem;color:var(--text-light)}
-.theme-picker__badge{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.12);font-size:.82rem;color:var(--text-light)}
+.theme-launcher__title{margin:0;font-size:1rem;color:var(--text-light)}
+.theme-launcher__current{margin:8px 0 0;color:#dce7ff;font-size:.92rem;line-height:1.35}
+.theme-launcher__btn{
+  flex:none;
+  min-width:118px;
+  border-radius:18px;
+  padding:14px 18px;
+  font-weight:800;
+  color:#fff;
+  background:linear-gradient(135deg,var(--purple),var(--purple-2));
+  box-shadow:0 16px 24px rgba(109,94,252,.28);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.theme-launcher__btn:active{transform:scale(.98)}
 .theme-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.theme-options--modal{margin-top:8px}
 .theme-option{
   text-align:left;
   padding:14px;
@@ -1079,3 +1095,7 @@ button,input{font-family:inherit}
 @media (max-width: 720px){
   .theme-options{grid-template-columns:1fr}
 }
+
+.modal-sheet--theme{max-width:720px}
+.theme-option.active::after{content:"✓";position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:900;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.theme-option{position:relative}

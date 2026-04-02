@@ -1,4 +1,4 @@
-const CACHE_NAME = 'metroquinho-themes-v9';
+const CACHE_NAME = 'metroquinho-themes-v10';
 const ASSETS = [
   './',
   './index.html',
