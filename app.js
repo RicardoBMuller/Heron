@@ -197,7 +197,8 @@ const SPECIAL_WALKS = [
   }
 ];
 
-const APP_STATE_KEY = 'metroquinho-route-v2';
+const APP_STATE_KEY = 'metroquinho-route-v3';
+const INSTALL_DISMISS_KEY = 'mqInstallDismissed';
 const RECENT_KEY = 'metroquinho-recent-v1';
 const KINDS = {
   metro: 'Metrô',
@@ -238,7 +239,10 @@ const dom = {
   speakRouteBtn: document.getElementById('speakRouteBtn'),
   speakCurrentBtn: document.getElementById('speakCurrentBtn'),
   networkBadge: document.getElementById('networkBadge'),
-  saveBadge: document.getElementById('saveBadge')
+  saveBadge: document.getElementById('saveBadge'),
+  installStatusBadge: document.getElementById('installStatusBadge'),
+  guideBubbleTitle: document.getElementById('guideBubbleTitle'),
+  guideBubbleText: document.getElementById('guideBubbleText')
 };
 
 const state = {
@@ -248,7 +252,9 @@ const state = {
   filter: 'all',
   route: null,
   doneStepIds: [],
-  recentStations: loadRecentStations()
+  recentStations: loadRecentStations(),
+  deferredInstallPrompt: null,
+  selectedVoice: null
 };
 
 function normalize(text) {
@@ -673,10 +679,12 @@ function findAndRenderRoute() {
   const route = breakdownPath(shortest);
 
   if (!route) {
+    setGuideMessage('Ops! Não achei um caminho agora.', 'Tente escolher outras estações ou confira se os nomes estão certinhos.');
     showToast('Não encontrei um caminho com as estações cadastradas.');
     return;
   }
 
+  setGuideMessage('Rota prontinha! 🚇', `Encontrei um caminho de ${state.origin} até ${state.destination}. Vamos nessa!`);
   state.route = route;
   state.doneStepIds = [];
   saveAppState();
@@ -689,6 +697,7 @@ function renderRoute() {
   if (!route) {
     dom.summaryCard.hidden = true;
     dom.emptyState.hidden = false;
+    setGuideMessage('Oi! Eu sou o Metroquinho.', 'Escolha a estação de origem e a de destino. Eu vou te mostrar o caminho de um jeito fácil, divertido e bem visual.');
     return;
   }
 
@@ -760,6 +769,8 @@ function renderTimeline() {
     node.classList.toggle('done', done);
     node.classList.toggle('current', current);
 
+    node.style.setProperty('--step-accent', step.type === 'walk' ? '#2bcdb6' : step.type === 'finish' ? '#0fcb8a' : step.color);
+
     if (step.type === 'finish') {
       stepBtn.textContent = 'Concluir missão';
       stepBtn.disabled = !state.route.steps.slice(0, -1).every(item => state.doneStepIds.includes(item.id) || item.type === 'finish');
@@ -768,7 +779,8 @@ function renderTimeline() {
         saveAppState();
         renderProgress();
         renderTimeline();
-        speakText('Parabéns. Você chegou ao destino.');
+        setGuideMessage('Chegamos! 🏁', 'Boa viagem concluída. Agora é só sair da estação com calma e seguir o passeio.');
+        speakText('Parabéns. Você chegou ao destino. Missão completada!');
         showToast('Missão concluída 🎉');
       });
     } else {
@@ -788,7 +800,10 @@ function toggleStepDone(stepId) {
   } else {
     state.doneStepIds.push(stepId);
     const currentStep = state.route.steps.find(step => step.id === stepId);
-    if (currentStep) speakText(currentStep.title + '. Ok, seguindo para a próxima etapa.');
+    if (currentStep) {
+      setGuideMessage('Boa! Etapa concluída. ✨', `Você terminou: ${currentStep.title}. Vamos para a próxima parte do caminho.`);
+      speakText(currentStep.title + '. Muito bem! Agora vamos para a próxima etapa.');
+    }
   }
   saveAppState();
   renderProgress();
@@ -846,6 +861,83 @@ function updateNetworkBadge() {
   dom.networkBadge.classList.toggle('offline', !online);
 }
 
+function isStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function updateInstallStatus() {
+  if (!dom.installStatusBadge) return;
+  if (isStandaloneMode()) {
+    dom.installStatusBadge.textContent = 'Metroquinho já está instalado neste aparelho';
+    return;
+  }
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+    dom.installStatusBadge.textContent = 'No iPhone/iPad: Compartilhar → Adicionar à Tela de Início';
+    return;
+  }
+  dom.installStatusBadge.textContent = 'Pode instalar no celular ou no computador';
+}
+
+function setupInstallPrompt() {
+  const banner = document.getElementById('installBanner');
+  const installBtn = document.getElementById('installBtn');
+  const dismissBtn = document.getElementById('installDismiss');
+
+  if (!banner || isStandaloneMode()) {
+    if (banner) banner.hidden = true;
+    updateInstallStatus();
+    return;
+  }
+
+  const dismissed = localStorage.getItem(INSTALL_DISMISS_KEY);
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+    banner.hidden = false;
+    installBtn.textContent = 'Como instalar';
+    installBtn.addEventListener('click', () => {
+      showToast('No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início.');
+      setGuideMessage('Vamos instalar? 📲', 'No iPhone ou iPad, toque em Compartilhar e depois em Adicionar à Tela de Início.');
+    });
+  } else if (!dismissed) {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      state.deferredInstallPrompt = e;
+      banner.hidden = false;
+      updateInstallStatus();
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    banner.hidden = true;
+    state.deferredInstallPrompt = null;
+    updateInstallStatus();
+    setGuideMessage('Oba! App instalado. 🎉', 'Agora o Metroquinho pode abrir como app na sua tela inicial.');
+    showToast('Metroquinho instalado com sucesso!');
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (!state.deferredInstallPrompt) return;
+    state.deferredInstallPrompt.prompt();
+    const { outcome } = await state.deferredInstallPrompt.userChoice;
+    if (outcome === 'accepted') {
+      banner.hidden = true;
+    }
+    state.deferredInstallPrompt = null;
+    updateInstallStatus();
+  });
+
+  dismissBtn?.addEventListener('click', () => {
+    banner.hidden = true;
+    localStorage.setItem(INSTALL_DISMISS_KEY, '1');
+  });
+
+  updateInstallStatus();
+}
+
+function setGuideMessage(title, text) {
+  if (dom.guideBubbleTitle) dom.guideBubbleTitle.textContent = title;
+  if (dom.guideBubbleText) dom.guideBubbleText.textContent = text;
+}
+
 function showToast(message) {
   const old = document.querySelector('.toast');
   if (old) old.remove();
@@ -857,16 +949,48 @@ function showToast(message) {
   setTimeout(() => toast.remove(), 2100);
 }
 
+function chooseBestVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return null;
+
+  const scored = voices
+    .map(voice => {
+      const name = `${voice.name} ${voice.lang}`.toLowerCase();
+      let score = 0;
+      if (voice.lang.toLowerCase().startsWith('pt-br')) score += 8;
+      else if (voice.lang.toLowerCase().startsWith('pt')) score += 5;
+      if (/female|helena|luciana|maria|brasil|natural|google/.test(name)) score += 2;
+      if (/child|kid/.test(name)) score += 1;
+      return { voice, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return scored[0]?.voice || null;
+}
+
+function primeVoices() {
+  if (!('speechSynthesis' in window)) return;
+  state.selectedVoice = chooseBestVoice();
+}
+
 function speakText(text) {
   if (!('speechSynthesis' in window)) {
     showToast('A voz do aparelho não está disponível aqui.');
     return;
   }
+
+  if (!state.selectedVoice) {
+    state.selectedVoice = chooseBestVoice();
+  }
+
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'pt-BR';
-  utterance.rate = 1;
-  utterance.pitch = 1.02;
+  utterance.rate = 0.96;
+  utterance.pitch = 1.18;
+  utterance.volume = 1;
+  if (state.selectedVoice) utterance.voice = state.selectedVoice;
   window.speechSynthesis.speak(utterance);
 }
 
@@ -920,6 +1044,10 @@ function bindEvents() {
 }
 
 function init() {
+  primeVoices();
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = primeVoices;
+  }
   loadAppState();
   updateStationFields();
   renderRecentStations();
@@ -927,6 +1055,8 @@ function init() {
   updateNetworkBadge();
   bindEvents();
   registerServiceWorker();
+  setupInstallPrompt();
+  updateInstallStatus();
 
   if (state.origin && state.destination && !state.route) {
     findAndRenderRoute();
@@ -935,40 +1065,3 @@ function init() {
 
 init();
 
-/* ─── PWA INSTALL PROMPT ─── */
-(function setupInstallPrompt() {
-  let deferredPrompt = null;
-  const banner   = document.getElementById('installBanner');
-  const installBtn = document.getElementById('installBtn');
-  const dismissBtn = document.getElementById('installDismiss');
-
-  // Não mostra se o usuário já dispensou
-  const dismissed = localStorage.getItem('mqInstallDismissed');
-  if (dismissed) return;
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    banner.hidden = false;
-  });
-
-  installBtn && installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      banner.hidden = true;
-    }
-    deferredPrompt = null;
-  });
-
-  dismissBtn && dismissBtn.addEventListener('click', () => {
-    banner.hidden = true;
-    localStorage.setItem('mqInstallDismissed', '1');
-  });
-
-  // Se já está instalado como PWA (standalone), esconde
-  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-    banner.hidden = true;
-  }
-})();

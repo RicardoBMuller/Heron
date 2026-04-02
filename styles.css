@@ -781,3 +781,43 @@ h1{
     flex-wrap:wrap;
   }
 }
+
+
+/* ─── ADIÇÕES LÚDICAS E PWA ─── */
+.install-status-badge{background:rgba(255,255,255,.14);color:#fff3c2}
+.guide-bubble{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding:14px 16px;border-radius:24px;position:relative;overflow:hidden}
+.guide-bubble::after{content:"";position:absolute;inset:auto -30px -30px auto;width:130px;height:130px;background:radial-gradient(circle,rgba(255,215,108,.22),transparent 65%);pointer-events:none}
+.guide-bubble-mascot-wrap{position:relative;width:72px;height:72px;display:grid;place-items:center;flex:none}
+.guide-bubble-mascot{width:64px;height:64px;animation:mascotFloat 2.8s ease-in-out infinite}
+.guide-bubble-star{position:absolute;right:0;top:4px;font-size:1.1rem;animation:twinkle 1.6s ease-in-out infinite}
+.guide-bubble strong{display:block;font-size:1rem;color:#fff;margin-bottom:4px}
+.guide-bubble p{margin:0;color:#e4edff;line-height:1.45;font-size:.95rem}
+.timeline-head-left{display:grid;gap:4px}
+.mini-stage{position:relative;height:58px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.06));overflow:hidden;margin:6px 0 14px}
+.mini-stage-track{position:absolute;left:14px;right:14px;top:32px;height:6px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.16),rgba(255,255,255,.35),rgba(255,255,255,.12))}
+.mini-stage-train,.mini-stage-runner,.mini-stage-flag{position:absolute;line-height:1}
+.mini-stage-train{left:-30px;top:10px;font-size:1.45rem;animation:miniTrain 9s linear infinite}
+.mini-stage-runner{left:10%;top:8px;font-size:1.25rem;animation:miniRunner 2.2s ease-in-out infinite}
+.mini-stage-flag{right:12px;top:8px;font-size:1.2rem;animation:flagBounce 1.8s ease-in-out infinite}
+.timeline-card{position:relative;overflow:hidden}
+.timeline-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--step-accent,rgba(255,255,255,.35));border-radius:999px}
+.timeline-card.current{box-shadow:0 0 0 1px rgba(255,255,255,.16),0 18px 40px rgba(0,0,0,.18);transform:translateY(-2px)}
+.timeline-card.current .timeline-visual{animation:pulseGlow 1.8s ease-in-out infinite}
+.timeline-card.done{opacity:.82}
+.timeline-icon.icon-ride{animation:rideBounce 2s ease-in-out infinite}
+.timeline-icon.icon-walk{animation:walkBob .9s ease-in-out infinite}
+.timeline-icon.icon-transfer{animation:spinHop 1.8s ease-in-out infinite}
+.timeline-icon.icon-finish{animation:trophyPop 1.6s ease-in-out infinite}
+.empty-item img{width:28px;height:28px}
+@keyframes installSlideUp{from{opacity:0;transform:translate(-50%,18px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes mascotFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(-2deg)}}
+@keyframes twinkle{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.65}}
+@keyframes miniTrain{0%{transform:translateX(0)}100%{transform:translateX(calc(100vw - 180px))}}
+@keyframes miniRunner{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-4px) translateX(7px)}}
+@keyframes flagBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes pulseGlow{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(255,255,255,0))}50%{transform:scale(1.04);filter:drop-shadow(0 0 16px rgba(255,255,255,.22))}}
+@keyframes rideBounce{0%,100%{transform:translateX(0) translateY(0)}25%{transform:translateX(2px) translateY(-2px)}75%{transform:translateX(-2px) translateY(2px)}}
+@keyframes walkBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-6deg)}}
+@keyframes spinHop{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(10deg)}}
+@keyframes trophyPop{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@media (max-width:720px){.install-banner{width:min(calc(100% - 20px),560px)}.install-info strong,.install-info span{white-space:normal}.guide-bubble{grid-template-columns:1fr;text-align:left}.guide-bubble-mascot-wrap{width:64px;height:64px}.mini-stage-train{animation-duration:7.5s}}

@@ -27,11 +27,11 @@
       </div>
       <div class="install-info">
         <strong>Instalar Metroquinho</strong>
-        <span>Funciona offline, sem app store!</span>
+        <span>Funciona offline, abre rapidinho e pode ficar na sua tela inicial.</span>
       </div>
     </div>
     <div class="install-banner-right">
-      <button id="installBtn" class="install-btn" type="button">Instalar</button>
+      <button id="installBtn" class="install-btn" type="button">Instalar agora</button>
       <button id="installDismiss" class="install-dismiss" type="button" aria-label="Fechar">✕</button>
     </div>
   </div>
@@ -55,6 +55,18 @@
       <div class="hero-status">
         <span id="networkBadge" class="network-badge">Carregando…</span>
         <span id="saveBadge" class="save-badge">Tudo salvo no aparelho</span>
+        <span id="installStatusBadge" class="save-badge install-status-badge">Pode instalar no celular ou no computador</span>
+      </div>
+
+      <div class="guide-bubble glass" id="guideBubble">
+        <div class="guide-bubble-mascot-wrap">
+          <img src="assets/mascot.svg" alt="Mascote Metroquinho" class="guide-bubble-mascot" />
+          <span class="guide-bubble-star">✨</span>
+        </div>
+        <div>
+          <strong id="guideBubbleTitle">Oi! Eu sou o Metroquinho.</strong>
+          <p id="guideBubbleText">Escolha a estação de origem e a de destino. Eu vou te mostrar o caminho de um jeito fácil, divertido e bem visual.</p>
+        </div>
       </div>
 
       <div class="planner-card glass">
@@ -123,8 +135,16 @@
         </div>
 
         <div class="timeline-head">
-          <h3>Passo a passo</h3>
+          <div class="timeline-head-left">
+          <h3>Passo a passo animado</h3>
+          </div>
           <button id="speakRouteBtn" class="tiny-btn" type="button">Ouvir rota</button>
+        </div>
+        <div class="mini-stage" aria-hidden="true">
+          <div class="mini-stage-track"></div>
+          <div class="mini-stage-train">🚇</div>
+          <div class="mini-stage-runner">🏃</div>
+          <div class="mini-stage-flag">🏁</div>
         </div>
         <div id="routeTimeline" class="route-timeline"></div>
       </section>
