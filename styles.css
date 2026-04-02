@@ -821,3 +821,37 @@ h1{
 @keyframes spinHop{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(10deg)}}
 @keyframes trophyPop{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 @media (max-width:720px){.install-banner{width:min(calc(100% - 20px),560px)}.install-info strong,.install-info span{white-space:normal}.guide-bubble{grid-template-columns:1fr;text-align:left}.guide-bubble-mascot-wrap{width:64px;height:64px}.mini-stage-train{animation-duration:7.5s}}
+
+body.with-splash{overflow:hidden}
+.opening-splash{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(4,10,24,.45);backdrop-filter:blur(10px)}
+.opening-splash[hidden]{display:none}
+.opening-splash__bg{position:absolute;inset:0;background:radial-gradient(circle at 20% 20%, rgba(255,215,108,.18), transparent 25%),radial-gradient(circle at 80% 15%, rgba(43,205,182,.18), transparent 22%),linear-gradient(180deg, rgba(109,94,252,.22), rgba(8,18,36,.65))}
+.opening-splash__card{position:relative;z-index:1;width:min(100%,420px);border-radius:32px;padding:28px 24px;text-align:center;background:linear-gradient(180deg,rgba(19,30,58,.96),rgba(9,19,40,.94));border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 80px rgba(0,0,0,.35);animation:splashIn .55s cubic-bezier(.22,1,.36,1) both}
+.opening-splash.hide .opening-splash__card{animation:splashOut .5s ease forwards}
+.opening-splash__sparkles{font-size:1.2rem;letter-spacing:.18em;opacity:.92;animation:twinkle 1.8s ease-in-out infinite}
+.opening-splash__mascot{width:110px;height:110px;margin:12px auto 8px;animation:mascotFloat 2.6s ease-in-out infinite}
+.opening-splash__mini-train{font-size:1.8rem;animation:miniTrainCard 3.5s linear infinite;white-space:nowrap}
+.opening-splash__card h2{margin:10px 0 8px;font-size:1.8rem;color:#fff}
+.opening-splash__card p{margin:0 auto 16px;max-width:28ch;color:#dbe8ff;line-height:1.5}
+.opening-splash__btn{width:100%}
+.station-field.is-popping,.summary-card.is-bouncing{animation:popOnce .42s cubic-bezier(.34,1.56,.64,1)}
+.guide-bubble.is-wiggling{animation:wiggleBubble .4s ease}
+.route-timeline .timeline-card{animation:cardAppear .45s ease both}
+.route-timeline .timeline-card:nth-child(1){animation-delay:.03s}
+.route-timeline .timeline-card:nth-child(2){animation-delay:.08s}
+.route-timeline .timeline-card:nth-child(3){animation-delay:.13s}
+.route-timeline .timeline-card:nth-child(4){animation-delay:.18s}
+.route-timeline .timeline-card:nth-child(5){animation-delay:.23s}
+.route-timeline .timeline-card:nth-child(6){animation-delay:.28s}
+.route-timeline .timeline-card:nth-child(7){animation-delay:.33s}
+.route-timeline .timeline-card:nth-child(8){animation-delay:.38s}
+.mini-stage.scene-ride .mini-stage-train{animation-duration:2.6s;filter:drop-shadow(0 0 14px rgba(109,94,252,.42))}
+.mini-stage.scene-walk .mini-stage-runner{animation-duration:.55s;transform-origin:center bottom}
+.mini-stage.scene-finish .mini-stage-flag{animation:flagCelebrate .65s ease-in-out 5}
+.mini-stage.scene-transfer .mini-stage-train{animation-duration:5s}
+@keyframes splashIn{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes splashOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(12px) scale(.96)}}
+@keyframes miniTrainCard{0%{transform:translateX(-120px)}100%{transform:translateX(120px)}}
+@keyframes popOnce{0%{transform:scale(1)}55%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes wiggleBubble{0%,100%{transform:rotate(0)}25%{transform:rotate(-1deg)}75%{transform:rotate(1deg)}}
+@keyframes flagCelebrate{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(-10deg)}}

@@ -200,6 +200,7 @@ const SPECIAL_WALKS = [
 const APP_STATE_KEY = 'metroquinho-route-v3';
 const INSTALL_DISMISS_KEY = 'mqInstallDismissed';
 const RECENT_KEY = 'metroquinho-recent-v1';
+const SPLASH_SEEN_KEY = 'metroquinho-splash-seen-v1';
 const KINDS = {
   metro: 'Metrô',
   trem: 'Trem',
@@ -242,7 +243,9 @@ const dom = {
   saveBadge: document.getElementById('saveBadge'),
   installStatusBadge: document.getElementById('installStatusBadge'),
   guideBubbleTitle: document.getElementById('guideBubbleTitle'),
-  guideBubbleText: document.getElementById('guideBubbleText')
+  guideBubbleText: document.getElementById('guideBubbleText'),
+  openingSplash: document.getElementById('openingSplash'),
+  openingSplashBtn: document.getElementById('openingSplashBtn')
 };
 
 const state = {
@@ -254,7 +257,8 @@ const state = {
   doneStepIds: [],
   recentStations: loadRecentStations(),
   deferredInstallPrompt: null,
-  selectedVoice: null
+  selectedVoice: null,
+  audioContext: null
 };
 
 function normalize(text) {
@@ -348,6 +352,8 @@ function setStation(target, stationName) {
 }
 
 function updateStationFields() {
+  bounceElement(dom.originField, 'is-popping');
+  bounceElement(dom.destinationField, 'is-popping');
   if (state.origin) {
     const info = getStationDetails(state.origin);
     dom.originValue.textContent = info.name;
@@ -417,6 +423,8 @@ function renderStationList() {
     `;
 
     card.querySelector('.pick-btn').addEventListener('click', () => {
+      ensureAudioContext();
+      playSound('select');
       setStation(state.modalTarget, item.name);
       pushRecentStation(item.name);
       if (state.origin && state.destination) {
@@ -452,6 +460,8 @@ function renderRecentStations() {
     placeholder.className = 'chip';
     placeholder.textContent = 'São Lucas';
     placeholder.addEventListener('click', () => {
+      ensureAudioContext();
+      playSound('select');
       const target = !state.origin ? 'origin' : 'destination';
       setStation(target, 'São Lucas');
       if (state.origin && state.destination) findAndRenderRoute();
@@ -466,6 +476,8 @@ function renderRecentStations() {
     btn.className = 'chip';
     btn.textContent = station;
     btn.addEventListener('click', () => {
+      ensureAudioContext();
+      playSound('select');
       const target = !state.origin ? 'origin' : 'destination';
       setStation(target, station);
       if (state.origin && state.destination) findAndRenderRoute();
@@ -689,6 +701,8 @@ function findAndRenderRoute() {
   state.doneStepIds = [];
   saveAppState();
   renderRoute();
+  bounceElement(dom.summaryCard);
+  playSound('route');
   speakText(`Rota pronta. ${buildSpeakRouteText(route.steps, true)}`);
 }
 
@@ -698,6 +712,7 @@ function renderRoute() {
     dom.summaryCard.hidden = true;
     dom.emptyState.hidden = false;
     setGuideMessage('Oi! Eu sou o Metroquinho.', 'Escolha a estação de origem e a de destino. Eu vou te mostrar o caminho de um jeito fácil, divertido e bem visual.');
+    animateStepScene('transfer');
     return;
   }
 
@@ -709,6 +724,8 @@ function renderRoute() {
   dom.changesValue.textContent = `${route.changes}`;
   renderProgress();
   renderTimeline();
+  const current = route.steps.find(step => !state.doneStepIds.includes(step.id)) || route.steps[route.steps.length - 1];
+  animateStepScene(current?.type || 'transfer');
 }
 
 function renderProgress() {
@@ -780,6 +797,8 @@ function renderTimeline() {
         renderProgress();
         renderTimeline();
         setGuideMessage('Chegamos! 🏁', 'Boa viagem concluída. Agora é só sair da estação com calma e seguir o passeio.');
+        playSound('success');
+        animateStepScene('finish');
         speakText('Parabéns. Você chegou ao destino. Missão completada!');
         showToast('Missão concluída 🎉');
       });
@@ -802,12 +821,95 @@ function toggleStepDone(stepId) {
     const currentStep = state.route.steps.find(step => step.id === stepId);
     if (currentStep) {
       setGuideMessage('Boa! Etapa concluída. ✨', `Você terminou: ${currentStep.title}. Vamos para a próxima parte do caminho.`);
+      playSound('done');
+      animateStepScene(currentStep.type);
       speakText(currentStep.title + '. Muito bem! Agora vamos para a próxima etapa.');
     }
   }
   saveAppState();
   renderProgress();
   renderTimeline();
+}
+
+function bounceElement(element, className = 'is-bouncing') {
+  if (!element) return;
+  element.classList.remove(className);
+  void element.offsetWidth;
+  element.classList.add(className);
+}
+
+function ensureAudioContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!state.audioContext) state.audioContext = new AudioCtx();
+  if (state.audioContext.state === 'suspended') state.audioContext.resume().catch(() => {});
+  return state.audioContext;
+}
+
+function playToneSequence(notes = [], duration = 0.08, gap = 0.03) {
+  const ctx = ensureAudioContext();
+  if (!ctx || !notes.length) return;
+  const now = ctx.currentTime;
+  notes.forEach((freq, index) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, now);
+    const start = now + index * (duration + gap);
+    gain.gain.exponentialRampToValueAtTime(0.05, start + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + duration + 0.02);
+  });
+}
+
+function playSound(type) {
+  const map = {
+    select: [587.33, 783.99],
+    swap: [440, 554.37, 659.25],
+    route: [523.25, 659.25, 783.99],
+    done: [659.25, 783.99, 987.77],
+    open: [392, 523.25, 659.25],
+    success: [523.25, 659.25, 783.99, 1046.5]
+  };
+  playToneSequence(map[type] || map.select, type === 'success' ? 0.1 : 0.07, 0.025);
+}
+
+function animateStepScene(type) {
+  const stage = document.querySelector('.mini-stage');
+  if (!stage) return;
+  stage.classList.remove('scene-ride', 'scene-walk', 'scene-finish', 'scene-transfer');
+  void stage.offsetWidth;
+  if (type === 'ride') stage.classList.add('scene-ride');
+  else if (type === 'walk') stage.classList.add('scene-walk');
+  else if (type === 'finish') stage.classList.add('scene-finish');
+  else stage.classList.add('scene-transfer');
+}
+
+function showOpeningSplash() {
+  const splash = dom.openingSplash;
+  if (!splash || localStorage.getItem(SPLASH_SEEN_KEY)) return;
+  splash.hidden = false;
+  splash.classList.add('show');
+  document.body.classList.add('with-splash');
+  playSound('open');
+  setGuideMessage('Oiê! Vamos brincar de encontrar o caminho? ✨', 'Escolha onde você está e para onde quer ir. Eu vou te acompanhar em cada etapa.');
+
+  const closeSplash = () => {
+    splash.classList.add('hide');
+    localStorage.setItem(SPLASH_SEEN_KEY, '1');
+    document.body.classList.remove('with-splash');
+    setTimeout(() => {
+      splash.hidden = true;
+      splash.classList.remove('show', 'hide');
+    }, 550);
+  };
+
+  dom.openingSplashBtn?.addEventListener('click', closeSplash, { once: true });
+  setTimeout(closeSplash, 2600);
 }
 
 function saveAppState() {
@@ -835,6 +937,7 @@ function loadAppState() {
 }
 
 function resetRoute() {
+  playSound('select');
   state.origin = null;
   state.destination = null;
   state.route = null;
@@ -846,6 +949,9 @@ function resetRoute() {
 }
 
 function swapStations() {
+  playSound('swap');
+  bounceElement(dom.originField);
+  bounceElement(dom.destinationField);
   const temp = state.origin;
   state.origin = state.destination;
   state.destination = temp;
@@ -946,6 +1052,7 @@ function showToast(message) {
   toast.className = 'toast';
   toast.textContent = message;
   document.body.appendChild(toast);
+  bounceElement(document.querySelector('.guide-bubble'), 'is-wiggling');
   setTimeout(() => toast.remove(), 2100);
 }
 
@@ -987,8 +1094,8 @@ function speakText(text) {
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'pt-BR';
-  utterance.rate = 0.96;
-  utterance.pitch = 1.18;
+  utterance.rate = 0.92;
+  utterance.pitch = 1.22;
   utterance.volume = 1;
   if (state.selectedVoice) utterance.voice = state.selectedVoice;
   window.speechSynthesis.speak(utterance);
@@ -1011,14 +1118,14 @@ function registerServiceWorker() {
 function bindEvents() {
   dom.originField.addEventListener('click', () => openModal('origin'));
   dom.destinationField.addEventListener('click', () => openModal('destination'));
-  dom.findRouteBtn.addEventListener('click', findAndRenderRoute);
-  dom.resetRouteBtn.addEventListener('click', resetRoute);
-  dom.swapBtn.addEventListener('click', swapStations);
+  dom.findRouteBtn.addEventListener('click', () => { ensureAudioContext(); findAndRenderRoute(); });
+  dom.resetRouteBtn.addEventListener('click', () => { ensureAudioContext(); resetRoute(); });
+  dom.swapBtn.addEventListener('click', () => { ensureAudioContext(); swapStations(); });
   dom.stationSearchInput.addEventListener('input', renderStationList);
-  dom.speakRouteBtn.addEventListener('click', () => {
+  dom.speakRouteBtn.addEventListener('click', () => { ensureAudioContext();
     if (state.route) speakText(buildSpeakRouteText(state.route.steps));
   });
-  dom.speakCurrentBtn.addEventListener('click', () => {
+  dom.speakCurrentBtn.addEventListener('click', () => { ensureAudioContext();
     if (!state.route) {
       speakText('Escolha a origem e o destino para começar.');
       return;
@@ -1057,6 +1164,7 @@ function init() {
   registerServiceWorker();
   setupInstallPrompt();
   updateInstallStatus();
+  showOpeningSplash();
 
   if (state.origin && state.destination && !state.route) {
     findAndRenderRoute();
