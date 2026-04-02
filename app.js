@@ -712,7 +712,7 @@ function renderRoute() {
   if (!route) {
     dom.summaryCard.hidden = true;
     dom.emptyState.hidden = false;
-    setGuideMessage('Oi! Eu sou o Metroquinho.', 'Escolha a estação de origem e a de destino. Eu vou te mostrar o caminho de um jeito fácil, divertido e bem visual.');
+    setGuideMessage('Oi! Eu sou o Metroquinho.', 'Escolha a estação de origem e a de destino. Eu vou te mostrar o caminho de um jeito fácil, divertido e com cara de desenho animado.');
     animateStepScene('transfer');
     return;
   }

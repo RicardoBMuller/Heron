@@ -3,10 +3,10 @@
   "short_name": "Metroquinho",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#081224",
-  "theme_color": "#6d5efc",
+  "background_color": "#f0d9b2",
+  "theme_color": "#b8432f",
   "lang": "pt-BR",
-  "description": "Guia offline para metrô, trem e monotrilho de São Paulo com rota passo a passo.",
+  "description": "Guia offline em estilo cartoon retrô para metrô, trem e monotrilho de São Paulo.",
   "orientation": "portrait-primary",
   "categories": ["travel", "utilities"],
   "icons": [
