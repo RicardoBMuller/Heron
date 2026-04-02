@@ -855,3 +855,5 @@ body.with-splash{overflow:hidden}
 @keyframes popOnce{0%{transform:scale(1)}55%{transform:scale(1.04)}100%{transform:scale(1)}}
 @keyframes wiggleBubble{0%,100%{transform:rotate(0)}25%{transform:rotate(-1deg)}75%{transform:rotate(1deg)}}
 @keyframes flagCelebrate{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(-10deg)}}
+
+.opening-splash.hide{pointer-events:none;opacity:0;transition:opacity .25s ease;}

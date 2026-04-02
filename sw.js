@@ -1,4 +1,4 @@
-const CACHE_NAME = 'metroquinho-offline-v6';
+const CACHE_NAME = 'metroquinho-offline-v7';
 const ASSETS = [
   './',
   './index.html',

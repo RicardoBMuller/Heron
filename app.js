@@ -200,7 +200,8 @@ const SPECIAL_WALKS = [
 const APP_STATE_KEY = 'metroquinho-route-v3';
 const INSTALL_DISMISS_KEY = 'mqInstallDismissed';
 const RECENT_KEY = 'metroquinho-recent-v1';
-const SPLASH_SEEN_KEY = 'metroquinho-splash-seen-v1';
+const SPLASH_SEEN_KEY = 'metroquinho-splash-seen-v2';
+const SPLASH_SESSION_KEY = 'metroquinho-splash-session-v1';
 const KINDS = {
   metro: 'Metrô',
   trem: 'Trem',
@@ -703,7 +704,7 @@ function findAndRenderRoute() {
   renderRoute();
   bounceElement(dom.summaryCard);
   playSound('route');
-  speakText(`Rota pronta. ${buildSpeakRouteText(route.steps, true)}`);
+  speakText('As instruções estão logo abaixo. Caso queira, toque em ouvir em cada etapa e eu explico uma de cada vez.');
 }
 
 function renderRoute() {
@@ -807,7 +808,10 @@ function renderTimeline() {
       stepBtn.addEventListener('click', () => toggleStepDone(step.id));
     }
 
-    voiceBtn.addEventListener('click', () => speakText(step.title + '. ' + step.text));
+    voiceBtn.addEventListener('click', () => {
+      ensureAudioContext();
+      speakText(step.title + '. ' + step.text);
+    });
 
     dom.routeTimeline.appendChild(node);
   });
@@ -823,7 +827,7 @@ function toggleStepDone(stepId) {
       setGuideMessage('Boa! Etapa concluída. ✨', `Você terminou: ${currentStep.title}. Vamos para a próxima parte do caminho.`);
       playSound('done');
       animateStepScene(currentStep.type);
-      speakText(currentStep.title + '. Muito bem! Agora vamos para a próxima etapa.');
+      speakText(currentStep.title + '. Etapa concluída. Quando quiser, toque em ouvir na próxima etapa.');
     }
   }
   saveAppState();
@@ -889,6 +893,13 @@ function animateStepScene(type) {
   else stage.classList.add('scene-transfer');
 }
 
+function stopSpeech() {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+  } catch {}
+}
+
 function hideOpeningSplashImmediately() {
   const splash = dom.openingSplash;
   if (!splash) return;
@@ -902,7 +913,8 @@ function showOpeningSplash() {
   const splash = dom.openingSplash;
   if (!splash) return;
 
-  if (localStorage.getItem(SPLASH_SEEN_KEY)) {
+  const alreadySeen = localStorage.getItem(SPLASH_SEEN_KEY) || sessionStorage.getItem(SPLASH_SESSION_KEY);
+  if (alreadySeen) {
     hideOpeningSplashImmediately();
     return;
   }
@@ -916,21 +928,34 @@ function showOpeningSplash() {
   setGuideMessage('Oiê! Vamos brincar de encontrar o caminho? ✨', 'Escolha onde você está e para onde quer ir. Eu vou te acompanhar em cada etapa.');
 
   let closed = false;
+  let closeTimer = null;
+
+  const finalizeHide = () => {
+    splash.hidden = true;
+    splash.classList.remove('show', 'hide');
+  };
+
   const closeSplash = () => {
     if (closed) return;
     closed = true;
-    splash.classList.add('hide');
+    if (closeTimer) clearTimeout(closeTimer);
+    sessionStorage.setItem(SPLASH_SESSION_KEY, '1');
     localStorage.setItem(SPLASH_SEEN_KEY, '1');
+    splash.classList.add('hide');
     splash.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('with-splash');
-    setTimeout(() => {
-      splash.hidden = true;
-      splash.classList.remove('show', 'hide');
-    }, 550);
+    window.requestAnimationFrame(() => {
+      setTimeout(finalizeHide, 450);
+    });
   };
 
   dom.openingSplashBtn?.addEventListener('click', closeSplash, { once: true });
-  setTimeout(closeSplash, 2600);
+  closeTimer = setTimeout(closeSplash, 2200);
+  window.addEventListener('pageshow', () => {
+    if (!closed && (document.visibilityState === 'visible' || document.visibilityState === undefined)) {
+      setTimeout(closeSplash, 250);
+    }
+  }, { once: true });
 }
 
 function saveAppState() {
@@ -958,6 +983,7 @@ function loadAppState() {
 }
 
 function resetRoute() {
+  stopSpeech();
   playSound('select');
   state.origin = null;
   state.destination = null;
@@ -1112,7 +1138,7 @@ function speakText(text) {
     state.selectedVoice = chooseBestVoice();
   }
 
-  window.speechSynthesis.cancel();
+  stopSpeech();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'pt-BR';
   utterance.rate = 0.92;
@@ -1144,15 +1170,14 @@ function bindEvents() {
   dom.swapBtn.addEventListener('click', () => { ensureAudioContext(); swapStations(); });
   dom.stationSearchInput.addEventListener('input', renderStationList);
   dom.speakRouteBtn.addEventListener('click', () => { ensureAudioContext();
-    if (state.route) speakText(buildSpeakRouteText(state.route.steps));
+    if (state.route) speakText('As instruções estão logo abaixo. Toque em ouvir em cada etapa para eu explicar uma parte de cada vez.');
   });
   dom.speakCurrentBtn.addEventListener('click', () => { ensureAudioContext();
     if (!state.route) {
       speakText('Escolha a origem e o destino para começar.');
       return;
     }
-    const current = state.route.steps.find(step => !state.doneStepIds.includes(step.id)) || state.route.steps[state.route.steps.length - 1];
-    speakText(current.title + '. ' + current.text);
+    speakText('As instruções estão logo abaixo. Toque em ouvir em cada etapa para eu explicar uma parte de cada vez.');
   });
 
   document.querySelectorAll('[data-close-modal]').forEach(btn => {
@@ -1169,6 +1194,10 @@ function bindEvents() {
 
   window.addEventListener('online', updateNetworkBadge);
   window.addEventListener('offline', updateNetworkBadge);
+  window.addEventListener('pagehide', stopSpeech);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopSpeech();
+  });
 }
 
 function init() {
