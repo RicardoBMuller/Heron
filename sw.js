@@ -1,20 +1,41 @@
-const CACHE_NAME = 'metroquinho-offline-v3';
+const CACHE_NAME = 'metroquinho-offline-v4';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
   './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
   './assets/mascot.svg',
   './assets/train.svg',
   './assets/station.svg',
   './assets/walk.svg',
-  './assets/finish.svg'
+  './assets/finish.svg',
+  './assets/hero-scene.svg',
+  './assets/hero-train.svg',
+  './assets/help-scene.svg',
+  './assets/route-board.svg',
+  './assets/station-signs.svg',
+  './assets/step-1.svg',
+  './assets/step-2.svg',
+  './assets/step-3.svg',
+  './assets/step-4.svg',
+  './assets/step-5.svg',
+  './assets/step-6.svg',
+  './assets/step-station.svg',
+  './assets/step-walk.svg',
+  './assets/step-train-green.svg',
+  './assets/step-train-prata.svg',
+  './assets/step-train-yellow.svg',
+  './assets/trophy.svg'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 

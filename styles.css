@@ -1,3 +1,4 @@
+/* ─── RESET & TOKENS ─── */
 *{box-sizing:border-box}
 :root{
   --bg:#081224;
@@ -34,10 +35,70 @@ html,body{
 button,input{font:inherit}
 button{cursor:pointer;border:0}
 img{display:block;max-width:100%}
+
+/* ─── BANNER DE INSTALAÇÃO PWA ─── */
+.install-banner{
+  position:fixed;
+  bottom:calc(16px + var(--safe-bottom));
+  left:50%;
+  transform:translateX(-50%);
+  width:min(calc(100% - 28px), 560px);
+  background:rgba(13,20,44,.92);
+  border:1px solid rgba(109,94,252,.45);
+  backdrop-filter:blur(20px);
+  border-radius:22px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  z-index:60;
+  box-shadow:0 20px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(109,94,252,.2);
+  animation:installSlideUp .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+.install-banner[hidden]{display:none}
+.install-banner-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.install-icon-wrap{
+  width:46px;height:46px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--teal));
+  display:grid;place-items:center;
+  flex:none;
+  box-shadow:0 6px 18px rgba(109,94,252,.4);
+}
+.install-icon{width:28px;height:28px}
+.install-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.install-info strong{font-size:.97rem;color:#fff;white-space:nowrap}
+.install-info span{font-size:.8rem;color:#b5c8ff;white-space:nowrap}
+.install-banner-right{display:flex;align-items:center;gap:8px}
+.install-btn{
+  background:linear-gradient(135deg,var(--purple),var(--purple-2));
+  color:#fff;
+  border-radius:14px;
+  padding:10px 18px;
+  font-weight:700;
+  font-size:.92rem;
+  white-space:nowrap;
+  box-shadow:0 8px 20px rgba(109,94,252,.35);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.install-btn:active{transform:scale(.96)}
+.install-dismiss{
+  width:34px;height:34px;
+  border-radius:10px;
+  background:rgba(255,255,255,.1);
+  color:#afc4e8;
+  font-size:.9rem;
+  display:grid;place-items:center;
+  transition:background .18s;
+}
+.install-dismiss:hover{background:rgba(255,255,255,.18)}
+
+/* ─── LAYOUT ─── */
 .app-shell{
   width:min(100%, 720px);
   margin:0 auto;
-  padding:calc(18px + var(--safe-top)) 14px calc(30px + var(--safe-bottom));
+  padding:calc(18px + var(--safe-top)) 14px calc(100px + var(--safe-bottom));
 }
 .hero{display:grid;gap:16px}
 .hero-top{
@@ -51,12 +112,19 @@ img{display:block;max-width:100%}
   align-items:center;
   gap:14px;
 }
+
+/* ─── MASCOT FLUTUANTE ─── */
 .mascot{
   width:74px;
   height:74px;
   flex:none;
   filter:drop-shadow(0 12px 20px rgba(0,0,0,.18));
 }
+.mascot-float{
+  animation:mascotFloat 3.2s ease-in-out infinite;
+  transform-origin:center bottom;
+}
+
 .eyebrow{
   margin:0 0 4px;
   font-size:.78rem;
@@ -154,7 +222,9 @@ h1{
   color:#fff;
   font-size:1.25rem;
   box-shadow:0 10px 20px rgba(109,94,252,.28);
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1);
 }
+.swap-btn:active{transform:rotate(180deg) scale(.9)}
 .planner-actions{
   display:grid;
   grid-template-columns:1fr auto;
@@ -282,6 +352,8 @@ h1{
   gap:12px;
   margin-top:12px;
 }
+
+/* ─── TIMELINE CARD ─── */
 .timeline-card{
   display:grid;
   grid-template-columns:76px 1fr;
@@ -293,26 +365,76 @@ h1{
   box-shadow:0 14px 36px rgba(8,18,36,.12);
   transform:translateY(0);
   transition:transform .24s ease, box-shadow .24s ease, opacity .24s ease;
+  animation:cardAppear .4s cubic-bezier(.34,1.56,.64,1) both;
 }
+.timeline-card:nth-child(1){animation-delay:.05s}
+.timeline-card:nth-child(2){animation-delay:.10s}
+.timeline-card:nth-child(3){animation-delay:.15s}
+.timeline-card:nth-child(4){animation-delay:.20s}
+.timeline-card:nth-child(5){animation-delay:.25s}
+.timeline-card:nth-child(6){animation-delay:.30s}
+.timeline-card:nth-child(7){animation-delay:.35s}
+.timeline-card:nth-child(8){animation-delay:.40s}
 .timeline-card.current{
   transform:translateY(-2px);
   box-shadow:0 20px 42px rgba(8,18,36,.18);
+  outline:2px solid var(--purple);
+  outline-offset:2px;
 }
 .timeline-card.done{
-  opacity:.76;
+  opacity:.72;
 }
 .timeline-card.current .timeline-title{
   color:var(--purple);
 }
+/* pulso no card atual */
+.timeline-card.current::before{
+  content:'';
+  position:absolute;
+  inset:-4px;
+  border-radius:28px;
+  border:2px solid var(--purple);
+  animation:cardPulse 2s ease-in-out infinite;
+  pointer-events:none;
+}
+.timeline-card{position:relative}
 .timeline-visual{
   display:grid;
   align-items:center;
   justify-items:center;
+  overflow:hidden;
 }
 .timeline-icon{
   width:68px;
   height:68px;
 }
+
+/* ─── ÍCONE DE TREM SE MOVENDO ─── */
+.icon-ride{
+  animation:trainRide 1.2s ease-in-out infinite alternate;
+  filter:drop-shadow(0 4px 8px rgba(109,94,252,.25));
+}
+/* ─── BONEQUINHO CORRENDO ─── */
+.icon-walk{
+  animation:personRun .55s steps(1) infinite;
+  filter:drop-shadow(0 3px 6px rgba(43,205,182,.3));
+}
+/* ─── ESTAÇÃO PULSANDO ─── */
+.icon-transfer{
+  animation:stationPop 1.4s ease-in-out infinite;
+  filter:drop-shadow(0 4px 10px rgba(255,215,108,.35));
+}
+/* ─── TROFÉU CELEBRANDO ─── */
+.icon-finish{
+  animation:trophyCelebrate 1s cubic-bezier(.34,1.56,.64,1) infinite alternate;
+  filter:drop-shadow(0 6px 14px rgba(15,203,138,.4));
+}
+/* done icon fica cinza */
+.timeline-card.done .timeline-icon{
+  filter:grayscale(.7) opacity(.7);
+  animation:none !important;
+}
+
 .timeline-topline{
   display:flex;
   align-items:center;
@@ -369,14 +491,34 @@ h1{
   border-radius:16px;
   flex:1;
 }
+
+/* ─── EMPTY STATE COM TREM ANIMADO ─── */
 .empty-state{
   display:grid;
   gap:10px;
   justify-items:center;
   text-align:center;
+  overflow:hidden;
 }
-.hero-illustration{
+.train-scene-wrap{
+  width:100%;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:8px 0;
+}
+.track-line{
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg, transparent, rgba(109,94,252,.5), var(--purple), rgba(43,205,182,.5), transparent);
+  border-radius:2px;
+}
+.train-ride-anim{
   width:min(200px, 56vw);
+  animation:trainHeroRide 4s ease-in-out infinite;
+  filter:drop-shadow(0 10px 24px rgba(109,94,252,.35));
 }
 .empty-state h2{
   margin:0;
@@ -403,12 +545,16 @@ h1{
   border-radius:20px;
   padding:10px 12px;
   text-align:left;
+  transition:transform .22s ease;
 }
+.empty-item:hover{transform:translateX(4px)}
 .empty-item img{
   width:42px;
   height:42px;
   flex:none;
 }
+
+/* ─── MODAL ─── */
 .modal[hidden]{display:none}
 .modal{
   position:fixed;
@@ -540,10 +686,73 @@ h1{
   z-index:50;
   animation:fadeUp .22s ease;
 }
+
+/* ─── KEYFRAMES ─── */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes fadeUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 
+/* mascot flutuante suave */
+@keyframes mascotFloat{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-10px) rotate(2deg)}
+}
+
+/* trem na tela inicial oscila de lado a lado */
+@keyframes trainHeroRide{
+  0%{transform:translateX(-20px) scaleX(1)}
+  45%{transform:translateX(20px) scaleX(1)}
+  50%{transform:translateX(20px) scaleX(-1)}
+  95%{transform:translateX(-20px) scaleX(-1)}
+  100%{transform:translateX(-20px) scaleX(1)}
+}
+
+/* trem nos steps balança sutilmente */
+@keyframes trainRide{
+  0%{transform:translateX(-4px) rotate(-1.5deg)}
+  100%{transform:translateX(4px) rotate(1.5deg)}
+}
+
+/* bonequinho "correndo" – balança e pula */
+@keyframes personRun{
+  0%  {transform:translateY(0)   rotate(-4deg) scaleX(1)}
+  25% {transform:translateY(-6px) rotate(0deg)  scaleX(1)}
+  50% {transform:translateY(0)   rotate(4deg)  scaleX(1)}
+  75% {transform:translateY(-6px) rotate(0deg)  scaleX(1)}
+  100%{transform:translateY(0)   rotate(-4deg) scaleX(1)}
+}
+
+/* estação sobe e desce com bounce */
+@keyframes stationPop{
+  0%,100%{transform:scale(1) translateY(0)}
+  50%{transform:scale(1.10) translateY(-4px)}
+}
+
+/* troféu celebrando */
+@keyframes trophyCelebrate{
+  0%{transform:rotate(-8deg) scale(1)}
+  100%{transform:rotate(8deg) scale(1.12)}
+}
+
+/* card aparecendo com spring */
+@keyframes cardAppear{
+  from{opacity:0;transform:translateY(18px) scale(.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* pulso no contorno do card atual */
+@keyframes cardPulse{
+  0%,100%{opacity:.6;transform:scale(1)}
+  50%{opacity:0;transform:scale(1.025)}
+}
+
+/* install banner subindo */
+@keyframes installSlideUp{
+  from{opacity:0;transform:translateX(-50%) translateY(30px)}
+  to{opacity:1;transform:translateX(-50%) translateY(0)}
+}
+
+/* ─── RESPONSIVO ─── */
 @media (max-width:560px){
   .planner-grid{
     grid-template-columns:1fr;
@@ -552,6 +761,7 @@ h1{
     margin-inline:auto;
     transform:rotate(90deg);
   }
+  .swap-btn:active{transform:rotate(270deg) scale(.9)}
   .planner-actions{
     grid-template-columns:1fr;
   }
@@ -566,5 +776,8 @@ h1{
   }
   .timeline-actions{
     flex-direction:column;
+  }
+  .install-banner{
+    flex-wrap:wrap;
   }
 }
