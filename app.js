@@ -202,7 +202,7 @@ const INSTALL_DISMISS_KEY = 'mqInstallDismissed';
 const RECENT_KEY = 'metroquinho-recent-v1';
 const SPLASH_SEEN_KEY = 'metroquinho-splash-seen-v2';
 const SPLASH_SESSION_KEY = 'metroquinho-splash-session-v1';
-const THEME_KEY = 'metroquinho-theme-v1';
+const THEME_KEY = 'metroquinho-theme-v2';
 const KINDS = {
   metro: 'Metrô',
   trem: 'Trem',
@@ -283,6 +283,7 @@ function themeMeta() {
 
 function applyTheme(theme, announce = false) {
   state.theme = ['premium', 'cartoon', 'candy'].includes(theme) ? theme : 'premium';
+  document.documentElement.dataset.theme = state.theme;
   document.body.dataset.theme = state.theme;
   localStorage.setItem(THEME_KEY, state.theme);
   dom.themeOptions?.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === state.theme));
@@ -290,6 +291,7 @@ function applyTheme(theme, announce = false) {
   const metaTheme = document.querySelector('meta[name="theme-color"]');
   const colors = { premium: '#6d5efc', cartoon: '#b8432f', candy: '#ff6fae' };
   if (metaTheme) metaTheme.setAttribute('content', colors[state.theme] || colors.premium);
+  refreshThemePreview();
   if (announce) {
     const meta = themeMeta();
     setGuideMessage(meta.title, meta.text);
@@ -301,6 +303,7 @@ function applyTheme(theme, announce = false) {
 
 function openThemeModal() {
   if (!dom.themeModal) return;
+  refreshThemePreview();
   dom.themeModal.hidden = false;
   document.body.style.overflow = 'hidden';
 }
@@ -309,6 +312,15 @@ function closeThemeModal() {
   if (!dom.themeModal) return;
   dom.themeModal.hidden = true;
   document.body.style.overflow = '';
+}
+
+function refreshThemePreview() {
+  dom.themeOptions?.forEach((btn, index) => {
+    const active = btn.dataset.theme === state.theme;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    btn.style.setProperty('--preview-delay', `${index * 120}ms`);
+  });
 }
 
 function getJokeLine(step) {
