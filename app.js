@@ -889,18 +889,39 @@ function animateStepScene(type) {
   else stage.classList.add('scene-transfer');
 }
 
+function hideOpeningSplashImmediately() {
+  const splash = dom.openingSplash;
+  if (!splash) return;
+  splash.hidden = true;
+  splash.setAttribute('aria-hidden', 'true');
+  splash.classList.remove('show', 'hide');
+  document.body.classList.remove('with-splash');
+}
+
 function showOpeningSplash() {
   const splash = dom.openingSplash;
-  if (!splash || localStorage.getItem(SPLASH_SEEN_KEY)) return;
+  if (!splash) return;
+
+  if (localStorage.getItem(SPLASH_SEEN_KEY)) {
+    hideOpeningSplashImmediately();
+    return;
+  }
+
   splash.hidden = false;
+  splash.setAttribute('aria-hidden', 'false');
+  splash.classList.remove('hide');
   splash.classList.add('show');
   document.body.classList.add('with-splash');
   playSound('open');
   setGuideMessage('Oiê! Vamos brincar de encontrar o caminho? ✨', 'Escolha onde você está e para onde quer ir. Eu vou te acompanhar em cada etapa.');
 
+  let closed = false;
   const closeSplash = () => {
+    if (closed) return;
+    closed = true;
     splash.classList.add('hide');
     localStorage.setItem(SPLASH_SEEN_KEY, '1');
+    splash.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('with-splash');
     setTimeout(() => {
       splash.hidden = true;
