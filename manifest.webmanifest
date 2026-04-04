@@ -1,32 +1,36 @@
 {
-  "name": "Metroquinho • Guia offline",
-  "short_name": "Metroquinho",
-  "start_url": "./index.html",
+  "id": "./",
+  "name": "Ispótifai - Carimbozando",
+  "short_name": "Carimbozando",
+  "description": "Player musical instalável do projeto Carimbozando.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f0d9b2",
-  "theme_color": "#b8432f",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#74ebd5",
+  "theme_color": "#2ecc71",
   "lang": "pt-BR",
-  "description": "Guia offline em estilo cartoon retrô para metrô, trem e monotrilho de São Paulo.",
-  "orientation": "portrait-primary",
-  "categories": ["travel", "utilities"],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./assets/mascot.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Abrir player",
+      "short_name": "Player",
+      "url": "./index.html?source=shortcut"
     }
   ]
 }

@@ -1,0 +1,5 @@
+Arquivo de letra reservado para a faixa "Onde a Voz Mora".
+
+Observação:
+- O player foi atualizado, mas o arquivo de áudio .mp3 dessa música não veio no ZIP enviado.
+- Assim que você adicionar "Onde a Voz Mora.mp3" nesta mesma pasta, dá para incluir a faixa na playlist do site sem depender de mais nada.
